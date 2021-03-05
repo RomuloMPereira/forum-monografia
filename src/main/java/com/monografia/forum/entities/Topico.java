@@ -43,7 +43,7 @@ public class Topico implements Serializable{
 	private Categoria categoria;
 	
 	@ManyToMany
-	@JoinTable(name = "tb_topicos_curtidas",
+	@JoinTable(name = "tb_topicos_curtidos",
 		joinColumns = @JoinColumn(name = "topico_id"),
 		inverseJoinColumns = @JoinColumn(name = "usuario_id"))	
 	private Set<Usuario> curtidas = new HashSet<>();
