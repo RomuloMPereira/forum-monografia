@@ -42,6 +42,10 @@ public class Topico implements Serializable{
 	@JoinColumn(name = "categoria_id")
 	private Categoria categoria;
 	
+	@ManyToOne
+	@JoinColumn(name = "subcategoria_id")
+	private Subcategoria subcategoria;
+	
 	@ManyToMany
 	@JoinTable(name = "tb_topicos_curtidos",
 		joinColumns = @JoinColumn(name = "topico_id"),
@@ -54,7 +58,7 @@ public class Topico implements Serializable{
 	public Topico() {
 	}
 
-	public Topico(Long id, String titulo, String corpo, Instant instante, Usuario autor, Categoria categoria) {
+	public Topico(Long id, String titulo, String corpo, Instant instante, Usuario autor, Categoria categoria, Subcategoria subcategoria) {
 		super();
 		this.id = id;
 		this.titulo = titulo;
@@ -62,6 +66,7 @@ public class Topico implements Serializable{
 		this.instante = instante;
 		this.autor = autor;
 		this.categoria = categoria;
+		this.subcategoria = subcategoria;
 	}
 
 	public Long getId() {
@@ -110,6 +115,14 @@ public class Topico implements Serializable{
 
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
+	}
+
+	public Subcategoria getSubcategoria() {
+		return subcategoria;
+	}
+
+	public void setSubcategoria(Subcategoria subcategoria) {
+		this.subcategoria = subcategoria;
 	}
 
 	public Set<Usuario> getCurtidas() {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.monografia.forum.dto.CategoriaDto;
 import com.monografia.forum.entities.Categoria;
@@ -16,6 +17,7 @@ public class CategoriaService {
 	@Autowired
 	private CategoriaRepository repository;
 	
+	@Transactional(readOnly = true)
 	public List<CategoriaDto> findAll(){
 		List<Categoria> list = repository.findAll();
 		List<CategoriaDto> listDto = new ArrayList<CategoriaDto>();	

@@ -11,38 +11,41 @@ import com.monografia.forum.entities.Categoria;
 import com.monografia.forum.entities.Subcategoria;
 import com.monografia.forum.entities.Topico;
 
-public class CategoriaDto implements Serializable {
+public class SubcategoriaDto implements Serializable{
 	private static final long serialVersionUID = 1L;
-
+	
 	private Long id;
 	
 	@NotBlank(message = "Campo obrigatório")
 	private String nome;
+	private Categoria categoria;
 	private List<TopicoDto> topicos = new ArrayList<>();
-	private List<SubcategoriaDto> subcategorias = new ArrayList<>();
 	
-	public CategoriaDto() {
+	public SubcategoriaDto() {
+		
 	}
 
-	public CategoriaDto(Long id, String nome) {
+	public SubcategoriaDto(Long id, String nome, Categoria categoria) {
 		super();
 		this.id = id;
 		this.nome = nome;
+		this.categoria = categoria;
 	}
 	
-	public CategoriaDto(Categoria entidade) {
+	public SubcategoriaDto(Subcategoria entity) {
 		super();
-		this.id = entidade.getId();
-		this.nome = entidade.getNome();
+		this.id = entity.getId();
+		this.nome = entity.getNome();
+		this.categoria = entity.getCategoria();
 	}
 	
-	public CategoriaDto(Categoria entidade, Set<Topico> topicos, Set<Subcategoria> subcategorias) {
+	public SubcategoriaDto(Subcategoria entity, Set<Topico> topicos) {
 		super();
-		this.id = entidade.getId();
-		this.nome = entidade.getNome();
+		this.id = entity.getId();
+		this.nome = entity.getNome();
+		this.categoria = entity.getCategoria();
 		
 		topicos.forEach(topico -> this.topicos.add(new TopicoDto(topico)));
-		subcategorias.forEach(subcategoria -> this.subcategorias.add(new SubcategoriaDto(subcategoria)));
 	}
 
 	public Long getId() {
@@ -61,19 +64,19 @@ public class CategoriaDto implements Serializable {
 		this.nome = nome;
 	}
 
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+
 	public List<TopicoDto> getTopicos() {
 		return topicos;
 	}
 
 	public void setTopicos(List<TopicoDto> topicos) {
 		this.topicos = topicos;
-	}
-
-	public List<SubcategoriaDto> getSubcategorias() {
-		return subcategorias;
-	}
-
-	public void setSubcategorias(List<SubcategoriaDto> subcategorias) {
-		this.subcategorias = subcategorias;
 	}
 }

@@ -26,13 +26,14 @@ public class TopicoDto implements Serializable{
 	
 	private UsuarioDto autor;
 	private CategoriaDto categoria;	
+	private SubcategoriaDto subcategoria;
 	private List<UsuarioDto> curtidas = new ArrayList<>();
 	private List<RespostaDto> respostas = new ArrayList<>();
 	
 	public TopicoDto() {
 	}
 
-	public TopicoDto(Long id, String titulo, String corpo, Instant instante, UsuarioDto autor, CategoriaDto categoria) {
+	public TopicoDto(Long id, String titulo, String corpo, Instant instante, UsuarioDto autor, CategoriaDto categoria, SubcategoriaDto subcategoria) {
 		super();
 		this.id = id;
 		this.titulo = titulo;
@@ -40,6 +41,7 @@ public class TopicoDto implements Serializable{
 		this.instante = instante;
 		this.autor = autor;
 		this.categoria = categoria;
+		this.subcategoria = subcategoria;
 	}
 	
 	public TopicoDto(Topico entidade) {
@@ -50,6 +52,7 @@ public class TopicoDto implements Serializable{
 		this.instante = entidade.getInstante();
 		this.autor = new UsuarioDto(entidade.getAutor());
 		this.categoria = new CategoriaDto(entidade.getCategoria());
+		this.subcategoria = new SubcategoriaDto(entidade.getSubcategoria());
 	}
 	
 	public TopicoDto(Topico entidade, Set<Usuario> curtidas, Set<Resposta> respostas) {
@@ -60,6 +63,7 @@ public class TopicoDto implements Serializable{
 		this.instante = entidade.getInstante();
 		this.autor = new UsuarioDto(entidade.getAutor());
 		this.categoria = new CategoriaDto(entidade.getCategoria());
+		this.subcategoria = new SubcategoriaDto(entidade.getSubcategoria());
 		
 		curtidas.forEach(curtida -> this.curtidas.add(new UsuarioDto(curtida)));
 		respostas.forEach(resposta -> this.respostas.add(new RespostaDto(resposta)));
@@ -111,6 +115,14 @@ public class TopicoDto implements Serializable{
 
 	public void setCategoria(CategoriaDto categoria) {
 		this.categoria = categoria;
+	}
+
+	public SubcategoriaDto getSubcategoria() {
+		return subcategoria;
+	}
+
+	public void setSubcategoria(SubcategoriaDto subcategoria) {
+		this.subcategoria = subcategoria;
 	}
 
 	public List<UsuarioDto> getCurtidas() {

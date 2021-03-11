@@ -8,12 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tb_categoria")
-public class Categoria implements Serializable{
+@Table(name = "tb_subcategoria")
+public class Subcategoria implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -22,19 +24,21 @@ public class Categoria implements Serializable{
 	
 	private String nome;
 	
-	@OneToMany(mappedBy = "categoria")
+	@ManyToOne
+	@JoinColumn(name = "categoria_id")
+	private Categoria categoria;
+	
+	@OneToMany(mappedBy = "subcategoria")
 	private Set<Topico> topicos = new HashSet<>();
 	
-	@OneToMany(mappedBy = "categoria")
-	private Set<Subcategoria> subcategorias = new HashSet<>();
-	
-	public Categoria() {
+	public Subcategoria() {
 	}
 
-	public Categoria(Long id, String nome) {
+	public Subcategoria(Long id, String nome, Categoria categoria) {
 		super();
 		this.id = id;
 		this.nome = nome;
+		this.categoria = categoria;
 	}
 
 	public Long getId() {
@@ -53,14 +57,18 @@ public class Categoria implements Serializable{
 		this.nome = nome;
 	}
 
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+
 	public Set<Topico> getTopicos() {
 		return topicos;
 	}
-
-	public Set<Subcategoria> getSubcategorias() {
-		return subcategorias;
-	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -77,7 +85,7 @@ public class Categoria implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		Subcategoria other = (Subcategoria) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
