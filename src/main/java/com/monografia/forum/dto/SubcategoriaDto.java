@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 
-import com.monografia.forum.entities.Categoria;
 import com.monografia.forum.entities.Subcategoria;
 import com.monografia.forum.entities.Topico;
 
@@ -18,32 +17,29 @@ public class SubcategoriaDto implements Serializable{
 	
 	@NotBlank(message = "Campo obrigatório")
 	private String nome;
-	private Categoria categoria;
+	private CategoriaDto categoria;
 	private List<TopicoDto> topicos = new ArrayList<>();
 	
 	public SubcategoriaDto() {
 		
 	}
 
-	public SubcategoriaDto(Long id, String nome, Categoria categoria) {
-		super();
+	public SubcategoriaDto(Long id, String nome, CategoriaDto categoria) {
 		this.id = id;
 		this.nome = nome;
 		this.categoria = categoria;
 	}
 	
 	public SubcategoriaDto(Subcategoria entity) {
-		super();
 		this.id = entity.getId();
 		this.nome = entity.getNome();
-		this.categoria = entity.getCategoria();
+		this.categoria = new CategoriaDto(entity.getCategoria());
 	}
 	
 	public SubcategoriaDto(Subcategoria entity, Set<Topico> topicos) {
-		super();
 		this.id = entity.getId();
 		this.nome = entity.getNome();
-		this.categoria = entity.getCategoria();
+		this.categoria = new CategoriaDto(entity.getCategoria());
 		
 		topicos.forEach(topico -> this.topicos.add(new TopicoDto(topico)));
 	}
@@ -64,11 +60,11 @@ public class SubcategoriaDto implements Serializable{
 		this.nome = nome;
 	}
 
-	public Categoria getCategoria() {
+	public CategoriaDto getCategoria() {
 		return categoria;
 	}
 
-	public void setCategoria(Categoria categoria) {
+	public void setCategoria(CategoriaDto categoria) {
 		this.categoria = categoria;
 	}
 

@@ -59,7 +59,6 @@ public class Topico implements Serializable{
 	}
 
 	public Topico(Long id, String titulo, String corpo, Instant instante, Usuario autor, Categoria categoria, Subcategoria subcategoria) {
-		super();
 		this.id = id;
 		this.titulo = titulo;
 		this.corpo = corpo;

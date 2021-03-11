@@ -14,13 +14,11 @@ public class FuncaoDto implements Serializable{
 	}
 
 	public FuncaoDto(Long id, String autoridade) {
-		super();
 		this.id = id;
 		this.autoridade = autoridade;
 	}
 	
 	public FuncaoDto(Funcao entidade) {
-		super();
 		this.id = entidade.getId();
 		this.autoridade = entidade.getAutoridade();
 	}

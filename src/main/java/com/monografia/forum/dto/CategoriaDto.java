@@ -25,19 +25,16 @@ public class CategoriaDto implements Serializable {
 	}
 
 	public CategoriaDto(Long id, String nome) {
-		super();
 		this.id = id;
 		this.nome = nome;
 	}
 	
 	public CategoriaDto(Categoria entidade) {
-		super();
 		this.id = entidade.getId();
 		this.nome = entidade.getNome();
 	}
 	
 	public CategoriaDto(Categoria entidade, Set<Topico> topicos, Set<Subcategoria> subcategorias) {
-		super();
 		this.id = entidade.getId();
 		this.nome = entidade.getNome();
 		

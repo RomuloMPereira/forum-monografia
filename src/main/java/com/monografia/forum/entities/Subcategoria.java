@@ -35,7 +35,6 @@ public class Subcategoria implements Serializable{
 	}
 
 	public Subcategoria(Long id, String nome, Categoria categoria) {
-		super();
 		this.id = id;
 		this.nome = nome;
 		this.categoria = categoria;

@@ -34,7 +34,6 @@ public class TopicoDto implements Serializable{
 	}
 
 	public TopicoDto(Long id, String titulo, String corpo, Instant instante, UsuarioDto autor, CategoriaDto categoria, SubcategoriaDto subcategoria) {
-		super();
 		this.id = id;
 		this.titulo = titulo;
 		this.corpo = corpo;
@@ -45,7 +44,6 @@ public class TopicoDto implements Serializable{
 	}
 	
 	public TopicoDto(Topico entidade) {
-		super();
 		this.id = entidade.getId();
 		this.titulo = entidade.getTitulo();
 		this.corpo = entidade.getCorpo();
@@ -56,7 +54,6 @@ public class TopicoDto implements Serializable{
 	}
 	
 	public TopicoDto(Topico entidade, Set<Usuario> curtidas, Set<Resposta> respostas) {
-		super();
 		this.id = entidade.getId();
 		this.titulo = entidade.getTitulo();
 		this.corpo = entidade.getCorpo();
@@ -65,7 +62,7 @@ public class TopicoDto implements Serializable{
 		this.categoria = new CategoriaDto(entidade.getCategoria());
 		this.subcategoria = new SubcategoriaDto(entidade.getSubcategoria());
 		
-		curtidas.forEach(curtida -> this.curtidas.add(new UsuarioDto(curtida)));
+		curtidas.forEach(user -> this.curtidas.add(new UsuarioDto(user)));
 		respostas.forEach(resposta -> this.respostas.add(new RespostaDto(resposta)));
 	}
 

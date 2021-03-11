@@ -22,7 +22,6 @@ public class Funcao implements Serializable{
 	}
 
 	public Funcao(Long id, String autoridade) {
-		super();
 		this.id = id;
 		this.autoridade = autoridade;
 	}

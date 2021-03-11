@@ -33,7 +33,6 @@ public class UsuarioDto implements Serializable{
 	}
 
 	public UsuarioDto(Long id, String nome, String email, String senha, FuncaoDto funcao) {
-		super();
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
@@ -42,7 +41,6 @@ public class UsuarioDto implements Serializable{
 	}
 	
 	public UsuarioDto(Usuario entidade) {
-		super();
 		this.id = entidade.getId();
 		this.nome = entidade.getNome();
 		this.email = entidade.getEmail();
@@ -51,7 +49,6 @@ public class UsuarioDto implements Serializable{
 	}
 	
 	public UsuarioDto(Usuario entidade, Set<Topico> topicos, Set<Topico> topicosCurtidos, Set<Resposta> respostas) {
-		super();
 		this.id = entidade.getId();
 		this.nome = entidade.getNome();
 		this.email = entidade.getEmail();

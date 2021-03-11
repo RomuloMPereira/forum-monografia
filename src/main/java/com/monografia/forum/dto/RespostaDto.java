@@ -27,7 +27,6 @@ public class RespostaDto implements Serializable{
 	}
 
 	public RespostaDto(Long id, String corpo, Instant instante, UsuarioDto autor, TopicoDto topico) {
-		super();
 		this.id = id;
 		this.corpo = corpo;
 		this.instante = instante;
@@ -36,7 +35,6 @@ public class RespostaDto implements Serializable{
 	}
 	
 	public RespostaDto(Resposta entidade) {
-		super();
 		this.id = entidade.getId();
 		this.corpo = entidade.getCorpo();
 		this.instante = entidade.getInstante();
@@ -45,7 +43,6 @@ public class RespostaDto implements Serializable{
 	}
 	
 	public RespostaDto(Resposta entidade, Set<Usuario> curtidas) {
-		super();
 		this.id = entidade.getId();
 		this.corpo = entidade.getCorpo();
 		this.instante = entidade.getInstante();

@@ -32,7 +32,6 @@ public class Categoria implements Serializable{
 	}
 
 	public Categoria(Long id, String nome) {
-		super();
 		this.id = id;
 		this.nome = nome;
 	}

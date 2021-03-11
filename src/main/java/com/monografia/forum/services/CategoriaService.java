@@ -22,7 +22,7 @@ public class CategoriaService {
 		List<Categoria> list = repository.findAll();
 		List<CategoriaDto> listDto = new ArrayList<CategoriaDto>();	
 		for (Categoria entity : list) {
-			listDto.add(new CategoriaDto(entity));
+			listDto.add(new CategoriaDto(entity, entity.getTopicos(), entity.getSubcategorias()));
 		}
 		return listDto;
 	}

@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tb_respostas")
+@Table(name = "tb_resposta")
 public class Resposta implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -49,7 +49,6 @@ public class Resposta implements Serializable{
 	}
 	
 	public Resposta(Long id, String corpo, Instant instante, Usuario autor, Topico topico) {
-		super();
 		this.id = id;
 		this.corpo = corpo;
 		this.instante = instante;
