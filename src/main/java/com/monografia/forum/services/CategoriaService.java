@@ -17,6 +17,7 @@ import com.monografia.forum.entities.Topico;
 import com.monografia.forum.repositories.CategoriaRepository;
 import com.monografia.forum.repositories.SubcategoriaRepository;
 import com.monografia.forum.repositories.TopicoRepository;
+import com.monografia.forum.services.exceptions.EntidadeNaoEncontradaException;
 
 @Service
 public class CategoriaService {
@@ -43,7 +44,7 @@ public class CategoriaService {
 	@Transactional(readOnly = true)
 	public CategoriaDto findById(Long id) {
 		Optional<Categoria> optional = repository.findById(id);
-		Categoria categoria = optional.get();
+		Categoria categoria = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
 		return (new CategoriaDto(categoria, categoria.getTopicos(), categoria.getSubcategorias()));
 	}
 
