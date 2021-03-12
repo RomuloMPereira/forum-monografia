@@ -37,44 +37,44 @@ public class CategoriaService {
 	private TopicoRepository topicoRepository;
 
 	@Transactional(readOnly = true)
-	public List<CategoriaDto> findAll() {
-		List<Categoria> list = repository.findAll();
-		List<CategoriaDto> listDto = new ArrayList<CategoriaDto>();
-		for (Categoria entity : list) {
-			listDto.add(new CategoriaDto(entity, entity.getTopicos(), entity.getSubcategorias()));
+	public List<CategoriaDto> listar() {
+		List<Categoria> lista = repository.findAll();
+		List<CategoriaDto> listaDto = new ArrayList<CategoriaDto>();
+		for (Categoria entidade : lista) {
+			listaDto.add(new CategoriaDto(entidade, entidade.getTopicos(), entidade.getSubcategorias()));
 		}
-		return listDto;
+		return listaDto;
 	}
 
 	@Transactional(readOnly = true)
-	public CategoriaDto findById(Long id) {
+	public CategoriaDto buscarPorId(Long id) {
 		Optional<Categoria> optional = repository.findById(id);
 		Categoria categoria = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
 		return (new CategoriaDto(categoria, categoria.getTopicos(), categoria.getSubcategorias()));
 	}
 
 	@Transactional
-	public CategoriaDto insert(CategoriaDto dto) {
-		Categoria entity = new Categoria();
-		copyDtoToEntity(dto, entity);
-		entity = repository.save(entity);
-		return new CategoriaDto(entity);
+	public CategoriaDto cadastrar(CategoriaDto dto) {
+		Categoria entidade = new Categoria();
+		copyDtoToEntity(dto, entidade);
+		entidade = repository.save(entidade);
+		return new CategoriaDto(entidade);
 	}
 
 	@Transactional
-	public CategoriaDto update(Long id, CategoriaDto dto) {
+	public CategoriaDto atualizar(Long id, CategoriaDto dto) {
 		try {
-			Categoria entity = repository.getOne(id);
-			copyDtoToEntity(dto, entity);
-			entity = repository.save(entity);
-			return new CategoriaDto(entity);
+			Categoria entidade = repository.getOne(id);
+			copyDtoToEntity(dto, entidade);
+			entidade = repository.save(entidade);
+			return new CategoriaDto(entidade);
 		} catch (EntityNotFoundException e) {
 			throw new EntidadeNaoEncontradaException("Categoria com id " + id + " não foi encontrada");
 		}
 
 	}
 	
-	public void delete(Long id) {
+	public void deletar(Long id) {
 		try {
 			
 		} catch(EmptyResultDataAccessException e) {

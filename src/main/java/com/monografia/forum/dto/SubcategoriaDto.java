@@ -30,16 +30,16 @@ public class SubcategoriaDto implements Serializable{
 		this.categoria = categoria;
 	}
 	
-	public SubcategoriaDto(Subcategoria entity) {
-		this.id = entity.getId();
-		this.nome = entity.getNome();
-		this.categoria = new CategoriaDto(entity.getCategoria());
+	public SubcategoriaDto(Subcategoria entidade) {
+		this.id = entidade.getId();
+		this.nome = entidade.getNome();
+		this.categoria = new CategoriaDto(entidade.getCategoria());
 	}
 	
-	public SubcategoriaDto(Subcategoria entity, Set<Topico> topicos) {
-		this.id = entity.getId();
-		this.nome = entity.getNome();
-		this.categoria = new CategoriaDto(entity.getCategoria());
+	public SubcategoriaDto(Subcategoria entidade, Set<Topico> topicos) {
+		this.id = entidade.getId();
+		this.nome = entidade.getNome();
+		this.categoria = new CategoriaDto(entidade.getCategoria());
 		
 		topicos.forEach(topico -> this.topicos.add(new TopicoDto(topico)));
 	}

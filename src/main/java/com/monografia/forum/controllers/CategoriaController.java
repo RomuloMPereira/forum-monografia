@@ -29,19 +29,19 @@ public class CategoriaController {
 
 	@GetMapping
 	public ResponseEntity<List<CategoriaDto>> findAll() {
-		List<CategoriaDto> list = service.findAll();
-		return ResponseEntity.ok().body(list);
+		List<CategoriaDto> lista = service.listar();
+		return ResponseEntity.ok().body(lista);
 	}
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<CategoriaDto> findById(@PathVariable Long id) {
-		CategoriaDto dto = service.findById(id);
+		CategoriaDto dto = service.buscarPorId(id);
 		return ResponseEntity.ok().body(dto);
 	}
 
 	@PostMapping
 	public ResponseEntity<CategoriaDto> insert(@Valid @RequestBody CategoriaDto dto) {
-		dto = service.insert(dto);
+		dto = service.cadastrar(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
@@ -49,13 +49,13 @@ public class CategoriaController {
 	
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<CategoriaDto> update(@PathVariable Long id, @Valid @RequestBody CategoriaDto dto){
-		dto = service.update(id, dto);
+		dto = service.atualizar(id, dto);
 		return ResponseEntity.ok().body(dto);
 	}
 	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<CategoriaDto> delete(@PathVariable Long id){
-		service.delete(id);
+		service.deletar(id);
 		return ResponseEntity.noContent().build();
 	}
 }

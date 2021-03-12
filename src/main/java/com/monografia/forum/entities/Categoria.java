@@ -74,7 +74,7 @@ public class Categoria implements Serializable{
 		return instanteCriacao;
 	}
 
-	public Instant getUpdatedAt() {
+	public Instant getInstanteAtualizacao() {
 		return instanteAtualizacao;
 	}
 
