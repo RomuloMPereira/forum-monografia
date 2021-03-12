@@ -2,6 +2,7 @@ package com.monografia.forum.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,13 @@ public class CategoriaService {
 			listDto.add(new CategoriaDto(entity, entity.getTopicos(), entity.getSubcategorias()));
 		}
 		return listDto;
+	}
+	
+	@Transactional(readOnly = true)
+	public CategoriaDto findById(Long id) {
+		Optional<Categoria> optional = repository.findById(id);
+		Categoria categoria = optional.get();
+		return (new CategoriaDto(categoria, categoria.getTopicos(), categoria.getSubcategorias()));
 	}
 
 }
