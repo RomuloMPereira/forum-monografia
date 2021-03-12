@@ -12,7 +12,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.monografia.forum.dto.CategoriaDto;
 import com.monografia.forum.dto.SubcategoriaDto;
 import com.monografia.forum.dto.TopicoDto;
 import com.monografia.forum.entities.Categoria;
@@ -25,55 +24,67 @@ import com.monografia.forum.services.exceptions.DatabaseException;
 import com.monografia.forum.services.exceptions.EntidadeNaoEncontradaException;
 
 @Service
-public class CategoriaService {
+public class SubcategoriaService {
 
 	@Autowired
-	private CategoriaRepository repository;
-
+	private SubcategoriaRepository repository;
+	
 	@Autowired
-	private SubcategoriaRepository subcategoriaRepository;
-
+	private CategoriaRepository categoriaRepository;
+	
 	@Autowired
 	private TopicoRepository topicoRepository;
 
 	@Transactional(readOnly = true)
-	public List<CategoriaDto> listar() {
-		List<Categoria> lista = repository.findAll();
-		List<CategoriaDto> listaDto = new ArrayList<CategoriaDto>();
-		for (Categoria entidade : lista) {
-			listaDto.add(new CategoriaDto(entidade, entidade.getTopicos(), entidade.getSubcategorias()));
+	public List<SubcategoriaDto> listar() {
+		List<Subcategoria> lista = repository.findAll();
+		List<SubcategoriaDto> listaDto = new ArrayList<SubcategoriaDto>();
+		for (Subcategoria entidade : lista) {
+			listaDto.add(new SubcategoriaDto(entidade, entidade.getTopicos()));
 		}
 		return listaDto;
 	}
 
 	@Transactional(readOnly = true)
-	public CategoriaDto buscarPorId(Long id) {
-		Optional<Categoria> optional = repository.findById(id);
-		Categoria categoria = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
-		return (new CategoriaDto(categoria, categoria.getTopicos(), categoria.getSubcategorias()));
+	public SubcategoriaDto buscarPorId(Long id) {
+		Optional<Subcategoria> optional = repository.findById(id);
+		Subcategoria entidade = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		return (new SubcategoriaDto(entidade, entidade.getTopicos()));
 	}
-
+	
 	@Transactional
-	public CategoriaDto cadastrar(CategoriaDto dto) {
-		Categoria entidade = new Categoria();
+	public SubcategoriaDto cadastrar(SubcategoriaDto dto) {
+		Subcategoria entidade = new Subcategoria();
 		copiarDtoParaEntidade(dto, entidade);
 		entidade = repository.save(entidade);
-		return new CategoriaDto(entidade);
+		return new SubcategoriaDto(entidade);
 	}
 
 	@Transactional
-	public CategoriaDto atualizar(Long id, CategoriaDto dto) {
+	public SubcategoriaDto atualizar(Long id, SubcategoriaDto dto) {
 		try {
-			Categoria entidade = repository.getOne(id);
+			Subcategoria entidade = repository.getOne(id);
 			copiarDtoParaEntidade(dto, entidade);
 			entidade = repository.save(entidade);
-			return new CategoriaDto(entidade);
+			return new SubcategoriaDto(entidade);
 		} catch (EntityNotFoundException e) {
-			throw new EntidadeNaoEncontradaException("Categoria com id " + id + " não foi encontrada");
+			throw new EntidadeNaoEncontradaException("Subcategoria com id " + id + " não foi encontrada");
 		}
 
 	}
 	
+	private void copiarDtoParaEntidade(SubcategoriaDto dto, Subcategoria entidade) {
+		entidade.setNome(dto.getNome());
+		Categoria categoria = categoriaRepository.getOne(dto.getCategoria().getId());
+		entidade.setCategoria(categoria);
+		
+		entidade.getTopicos().clear();
+		for (TopicoDto topicoDto : dto.getTopicos()) {
+			Topico topico = topicoRepository.getOne(topicoDto.getId());
+			entidade.getTopicos().add(topico);
+		}
+	}
+
 	public void deletar(Long id) {
 		try {
 			repository.deleteById(id);
@@ -82,22 +93,6 @@ public class CategoriaService {
 		}
 		catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Violação de integridade");
-		}
-	}
-
-	private void copiarDtoParaEntidade(CategoriaDto dto, Categoria entity) {
-		entity.setNome(dto.getNome());
-
-		entity.getSubcategorias().clear();
-		for (SubcategoriaDto subcategoriaDto : dto.getSubcategorias()) {
-			Subcategoria subcategoria = subcategoriaRepository.getOne(subcategoriaDto.getId());
-			entity.getSubcategorias().add(subcategoria);
-		}
-
-		entity.getTopicos().clear();
-		for (TopicoDto topicoDto : dto.getTopicos()) {
-			Topico topico = topicoRepository.getOne(topicoDto.getId());
-			entity.getTopicos().add(topico);
 		}
 	}
 }

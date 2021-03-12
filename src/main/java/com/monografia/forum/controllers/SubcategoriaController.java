@@ -17,44 +17,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.monografia.forum.dto.CategoriaDto;
-import com.monografia.forum.services.CategoriaService;
+import com.monografia.forum.dto.SubcategoriaDto;
+import com.monografia.forum.services.SubcategoriaService;
 
 @RestController
-@RequestMapping(value = "/categorias")
-public class CategoriaController {
+@RequestMapping(value = "/subcategorias")
+public class SubcategoriaController {
 
 	@Autowired
-	private CategoriaService service;
+	private SubcategoriaService service;
 
 	@GetMapping
-	public ResponseEntity<List<CategoriaDto>> listar() {
-		List<CategoriaDto> lista = service.listar();
+	public ResponseEntity<List<SubcategoriaDto>> listar() {
+		List<SubcategoriaDto> lista = service.listar();
 		return ResponseEntity.ok().body(lista);
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<CategoriaDto> buscarPorId(@PathVariable Long id) {
-		CategoriaDto dto = service.buscarPorId(id);
+	public ResponseEntity<SubcategoriaDto> buscarPorId(@PathVariable Long id) {
+		SubcategoriaDto dto = service.buscarPorId(id);
 		return ResponseEntity.ok().body(dto);
 	}
 
 	@PostMapping
-	public ResponseEntity<CategoriaDto> cadastrar(@Valid @RequestBody CategoriaDto dto) {
+	public ResponseEntity<SubcategoriaDto> cadastrar(@Valid @RequestBody SubcategoriaDto dto) {
 		dto = service.cadastrar(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
 	}
-	
+
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<CategoriaDto> atualizar(@PathVariable Long id, @Valid @RequestBody CategoriaDto dto){
+	public ResponseEntity<SubcategoriaDto> atualizar(@PathVariable Long id, @Valid @RequestBody SubcategoriaDto dto){
 		dto = service.atualizar(id, dto);
 		return ResponseEntity.ok().body(dto);
 	}
-	
+
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<CategoriaDto> deletar(@PathVariable Long id){
+	public ResponseEntity<SubcategoriaDto> deletar(@PathVariable Long id){
 		service.deletar(id);
 		return ResponseEntity.noContent().build();
 	}
