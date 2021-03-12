@@ -1,14 +1,18 @@
 package com.monografia.forum.entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 @Entity
@@ -27,6 +31,12 @@ public class Categoria implements Serializable{
 	
 	@OneToMany(mappedBy = "categoria")
 	private Set<Subcategoria> subcategorias = new HashSet<>();
+	
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant instanteCriacao;
+
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant instanteAtualizacao;
 	
 	public Categoria() {
 	}
@@ -58,6 +68,24 @@ public class Categoria implements Serializable{
 
 	public Set<Subcategoria> getSubcategorias() {
 		return subcategorias;
+	}
+	
+	public Instant getInstanteCriacao() {
+		return instanteCriacao;
+	}
+
+	public Instant getUpdatedAt() {
+		return instanteAtualizacao;
+	}
+
+	@PrePersist
+	public void prePersist() {
+		instanteCriacao = Instant.now();
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		instanteAtualizacao = Instant.now();
 	}
 
 	@Override

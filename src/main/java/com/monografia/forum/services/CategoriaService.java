@@ -7,6 +7,8 @@ import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ import com.monografia.forum.entities.Topico;
 import com.monografia.forum.repositories.CategoriaRepository;
 import com.monografia.forum.repositories.SubcategoriaRepository;
 import com.monografia.forum.repositories.TopicoRepository;
+import com.monografia.forum.services.exceptions.DatabaseException;
 import com.monografia.forum.services.exceptions.EntidadeNaoEncontradaException;
 
 @Service
@@ -70,6 +73,17 @@ public class CategoriaService {
 		}
 
 	}
+	
+	public void delete(Long id) {
+		try {
+			
+		} catch(EmptyResultDataAccessException e) {
+			throw new EntidadeNaoEncontradaException("Categoria com id " + id + " não foi encontrada");
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Violação de integridade");
+		}
+	}
 
 	private void copyDtoToEntity(CategoriaDto dto, Categoria entity) {
 		entity.setNome(dto.getNome());
@@ -86,5 +100,4 @@ public class CategoriaService {
 			entity.getTopicos().add(topico);
 		}
 	}
-
 }
