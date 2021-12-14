@@ -1,8 +1,10 @@
 package com.monografia.forum.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,14 +13,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Entity
 @Table(name = "tb_usuario")
-public class Usuario implements Serializable{
+public class Usuario implements UserDetails, Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -30,9 +36,11 @@ public class Usuario implements Serializable{
 	private String email;
 	private String senha;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "funcao_id")
-	private Funcao funcao; 
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "tb_usuario_funcao",
+			joinColumns = @JoinColumn(name = "usuario_id"),
+			inverseJoinColumns = @JoinColumn(name = "funcao_id"))
+	private Set<Funcao> funcoes = new HashSet<>();
 	
 	@OneToMany(mappedBy = "autor")
 	private Set<Topico> topicos = new HashSet<>();
@@ -46,12 +54,11 @@ public class Usuario implements Serializable{
 	public Usuario() {
 	}
 
-	public Usuario(Long id, String nome, String email, String senha, Funcao funcao) {
+	public Usuario(Long id, String nome, String email, String senha) {
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.senha = senha;
-		this.funcao = funcao;
 	}
 
 	public Long getId() {
@@ -86,12 +93,12 @@ public class Usuario implements Serializable{
 		this.senha = senha;
 	}
 
-	public Funcao getFuncao() {
-		return funcao;
+	public Set<Funcao> getFuncoes() {
+		return funcoes;
 	}
 
-	public void setFuncao(Funcao funcao) {
-		this.funcao = funcao;
+	public void setFuncoes(Set<Funcao> funcoes) {
+		this.funcoes = funcoes;
 	}
 
 	public Set<Topico> getTopicos() {
@@ -128,6 +135,42 @@ public class Usuario implements Serializable{
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
+		return true;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return funcoes.stream().map(funcao -> new SimpleGrantedAuthority(funcao.getAutoridade()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public String getPassword() {
+		return senha;
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
 		return true;
 	}
 }

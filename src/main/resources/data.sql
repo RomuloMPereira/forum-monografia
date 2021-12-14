@@ -23,9 +23,13 @@ INSERT INTO tb_subcategoria(nome, categoria_id) VALUES ('Projeto Orientado a Obj
 INSERT INTO tb_funcao(autoridade) VALUES ('ROLE_OPERATOR');
 INSERT INTO tb_funcao(autoridade) VALUES ('ROLE_ADMIN');
 
-INSERT INTO tb_usuario(email, nome, senha, funcao_id) VALUES ('joao@gmail.com', 'João Mendes', '123456', 2);
-INSERT INTO tb_usuario(email, nome, senha, funcao_id) VALUES ('maria@gmail.com', 'Maria da Silva', '123456', 1);
-INSERT INTO tb_usuario(email, nome, senha, funcao_id) VALUES ('pedro@gmail.com', 'Pedro dos Santos', '123456', 1);
+INSERT INTO tb_usuario(email, nome, senha) VALUES ('joao@gmail.com', 'João Mendes', '$2a$10$eACCYoNOHEqXve8aIWT8Nu3PkMXWBaOxJ9aORUYzfMQCbVBIhZ8tG');
+INSERT INTO tb_usuario(email, nome, senha) VALUES ('maria@gmail.com', 'Maria da Silva', '$2a$10$eACCYoNOHEqXve8aIWT8Nu3PkMXWBaOxJ9aORUYzfMQCbVBIhZ8tG');
+INSERT INTO tb_usuario(email, nome, senha) VALUES ('pedro@gmail.com', 'Pedro dos Santos', '$2a$10$eACCYoNOHEqXve8aIWT8Nu3PkMXWBaOxJ9aORUYzfMQCbVBIhZ8tG');
+
+INSERT INTO tb_usuario_funcao(usuario_id, funcao_id) VALUES (1, 1);
+INSERT INTO tb_usuario_funcao(usuario_id, funcao_id) VALUES (1, 2);
+INSERT INTO tb_usuario_funcao(usuario_id, funcao_id) VALUES (2, 1);
 
 INSERT INTO tb_topico(corpo, instante, titulo, autor_id, categoria_id, subcategoria_id) VALUES ('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', TIMESTAMP WITH TIME ZONE '2020-07-14T10:00:00Z', 'Lorem ipsum I', 1, 1, 1);
 INSERT INTO tb_topico(corpo, instante, titulo, autor_id, categoria_id, subcategoria_id) VALUES ('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', TIMESTAMP WITH TIME ZONE '2020-08-14T10:00:00Z', 'Lorem ipsum II', 2, 2, 1);

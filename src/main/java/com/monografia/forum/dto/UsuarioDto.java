@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import com.monografia.forum.entities.Funcao;
 import com.monografia.forum.entities.Resposta;
 import com.monografia.forum.entities.Topico;
 import com.monografia.forum.entities.Usuario;
@@ -24,7 +25,7 @@ public class UsuarioDto implements Serializable{
 	private String email;
 	private String senha;
 	
-	private FuncaoDto funcao; 
+	private List<FuncaoDto> funcoes = new ArrayList<>(); 
 	private List<TopicoDto> topicos = new ArrayList<>();
 	private List<TopicoDto> topicosCurtidos = new ArrayList<>();
 	private List<RespostaDto> respostas = new ArrayList<>();
@@ -32,12 +33,11 @@ public class UsuarioDto implements Serializable{
 	public UsuarioDto() {
 	}
 
-	public UsuarioDto(Long id, String nome, String email, String senha, FuncaoDto funcao) {
+	public UsuarioDto(Long id, String nome, String email, String senha) {
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.senha = senha;
-		this.funcao = funcao;
 	}
 	
 	public UsuarioDto(Usuario entidade) {
@@ -45,16 +45,15 @@ public class UsuarioDto implements Serializable{
 		this.nome = entidade.getNome();
 		this.email = entidade.getEmail();
 		this.senha = entidade.getSenha();
-		this.funcao = new FuncaoDto(entidade.getFuncao());
 	}
 	
-	public UsuarioDto(Usuario entidade, Set<Topico> topicos, Set<Topico> topicosCurtidos, Set<Resposta> respostas) {
+	public UsuarioDto(Usuario entidade, Set<Funcao> funcoes, Set<Topico> topicos, Set<Topico> topicosCurtidos, Set<Resposta> respostas) {
 		this.id = entidade.getId();
 		this.nome = entidade.getNome();
 		this.email = entidade.getEmail();
 		this.senha = entidade.getSenha();
-		this.funcao = new FuncaoDto(entidade.getFuncao());
 		
+		funcoes.forEach(funcao -> this.funcoes.add(new FuncaoDto(funcao)));
 		topicos.forEach(topico -> this.topicos.add(new TopicoDto(topico)));
 		topicosCurtidos.forEach(topicoCurtido -> this.topicosCurtidos.add(new TopicoDto(topicoCurtido)));
 		respostas.forEach(resposta -> this.respostas.add(new RespostaDto(resposta)));
@@ -92,12 +91,12 @@ public class UsuarioDto implements Serializable{
 		this.senha = senha;
 	}
 
-	public FuncaoDto getFuncao() {
-		return funcao;
+	public List<FuncaoDto> getFuncoes() {
+		return funcoes;
 	}
 
-	public void setFuncao(FuncaoDto funcao) {
-		this.funcao = funcao;
+	public void setFuncoes(List<FuncaoDto> funcoes) {
+		this.funcoes = funcoes;
 	}
 
 	public List<TopicoDto> getTopicos() {
