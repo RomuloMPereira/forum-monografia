@@ -28,6 +28,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	private static final String[] AUTH = {"oauth/token"};
 	
 	private static final String[] GET = { "/categorias/**", "/subcategorias/**" };
+	
+	private static final String[] POST_PUBLIC = {"/usuarios/**"};
 
 	//private static final String[] OPERATOR_OR_ADMIN = { };
 
@@ -43,6 +45,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 		http.authorizeRequests()
 			.antMatchers(AUTH).permitAll()
 			.antMatchers(HttpMethod.GET, GET).permitAll()
+			.antMatchers(HttpMethod.POST, POST_PUBLIC).permitAll()
 			//.antMatchers(OPERATOR_OR_ADMIN).hasAnyRole("OPERATOR", "ADMIN")
 			.antMatchers(ADMIN).hasAnyRole("ADMIN")
 			.anyRequest().authenticated();
