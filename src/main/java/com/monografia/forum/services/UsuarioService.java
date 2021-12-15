@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.monografia.forum.dto.FuncaoDto;
 import com.monografia.forum.dto.UsuarioDto;
+import com.monografia.forum.dto.UsuarioPayloadDto;
 import com.monografia.forum.entities.Funcao;
 import com.monografia.forum.entities.Usuario;
 import com.monografia.forum.repositories.FuncaoRepository;
@@ -42,43 +43,39 @@ public class UsuarioService implements UserDetailsService {
 	private BCryptPasswordEncoder passwordEncoder;
 
 	@Transactional(readOnly = true)
-	public Page<UsuarioDto> findAllPaged(String nome, PageRequest pageRequest) {
+	public Page<UsuarioPayloadDto> findAllPaged(String nome, PageRequest pageRequest) {
 		Page<Usuario> page;
-		if(nome == "") {
+		if (nome == "") {
 			page = repository.findAll(pageRequest);
 		} else {
 			page = repository.find(nome, pageRequest);
 		}
-		return page.map(x -> new UsuarioDto(x));
+		return page.map(x -> new UsuarioPayloadDto(x));
 	}
 
 	@Transactional(readOnly = true)
-	public UsuarioDto findById(Long id) {
+	public UsuarioPayloadDto findById(Long id) {
 		Optional<Usuario> optional = repository.findById(id);
 		Usuario entity = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
-		return new UsuarioDto(entity);
+		return new UsuarioPayloadDto(entity);
 	}
 
 	@Transactional
-	public UsuarioDto insert(UsuarioDto dto) {
+	public UsuarioPayloadDto insert(UsuarioDto dto) {
 		Usuario entity = new Usuario();
 		copyDtoToEntity(dto, entity);
 		entity.setSenha(passwordEncoder.encode(dto.getSenha()));
 		entity = repository.save(entity);
-		return new UsuarioDto(entity);
+		return new UsuarioPayloadDto(entity);
 	}
 
 	@Transactional
-	public UsuarioDto update(Long id, UsuarioDto dto) {
-		try {
-			Optional<Usuario> optional = repository.findById(id);
-			Usuario entity = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
-			copyDtoToEntity(dto, entity);
-			entity = repository.save(entity);
-			return new UsuarioDto(entity);
-		} catch (EntityNotFoundException e) {
-			throw new EntidadeNaoEncontradaException("Entidade não encontrada");
-		}
+	public UsuarioPayloadDto update(Long id, UsuarioDto dto) {
+		Optional<Usuario> optional = repository.findById(id);
+		Usuario entity = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		copyDtoToEntity(dto, entity);
+		entity = repository.save(entity);
+		return new UsuarioPayloadDto(entity);
 	}
 
 	public void delete(Long id) {
@@ -98,7 +95,7 @@ public class UsuarioService implements UserDetailsService {
 
 		entity.getFuncoes().clear();
 
-		//Se o dto não vier com nenhuma função, adiciona ROLE_OPERATOR à entidade.
+		// Se o dto não vier com nenhuma função, adiciona ROLE_OPERATOR à entidade.
 		if (dto.getFuncoes() == null) {
 			Optional<Funcao> optional = funcaoRepository.findById(1L);
 			Funcao funcao = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));

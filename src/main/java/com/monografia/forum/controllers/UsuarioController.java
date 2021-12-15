@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.monografia.forum.dto.UsuarioDto;
+import com.monografia.forum.dto.UsuarioPayloadDto;
 import com.monografia.forum.services.UsuarioService;
 
 @RestController
@@ -28,7 +29,7 @@ public class UsuarioController {
 	private UsuarioService service;
 	
 	@GetMapping
-	private ResponseEntity<Page<UsuarioDto>> listar(
+	private ResponseEntity<Page<UsuarioPayloadDto>> listar(
 			@RequestParam(value = "nome", defaultValue = "") String nome,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
@@ -37,15 +38,15 @@ public class UsuarioController {
 		
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		
-		Page<UsuarioDto> lista = service.findAllPaged(nome, pageRequest);
+		Page<UsuarioPayloadDto> lista = service.findAllPaged(nome, pageRequest);
 		return ResponseEntity.ok().body(lista);
 	}
 	
 	@PostMapping
-	private ResponseEntity<UsuarioDto> cadastrar(@Valid @RequestBody UsuarioDto dto){
-		dto = service.insert(dto);
+	private ResponseEntity<UsuarioPayloadDto> cadastrar(@Valid @RequestBody UsuarioDto dto){
+		UsuarioPayloadDto dtoPayload = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(dto.getId()).toUri();
-		return ResponseEntity.created(uri).body(dto);
+		return ResponseEntity.created(uri).body(dtoPayload);
 	}
 }
