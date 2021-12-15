@@ -21,8 +21,11 @@ public class UsuarioDto implements Serializable{
 	@NotBlank(message = "Campo obrigatório")
 	private String nome;
 	
+	@NotBlank(message = "Campo obrigatório")
 	@Email(message = "Favor entrar um email válido")
 	private String email;
+	
+	@NotBlank(message = "Campo obrigatório")
 	private String senha;
 	
 	private List<FuncaoDto> funcoes = new ArrayList<>(); 

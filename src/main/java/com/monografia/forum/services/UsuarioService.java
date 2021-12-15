@@ -42,9 +42,14 @@ public class UsuarioService implements UserDetailsService {
 	private BCryptPasswordEncoder passwordEncoder;
 
 	@Transactional(readOnly = true)
-	public Page<UsuarioDto> findAllPaged(PageRequest pageRequest) {
-		Page<Usuario> list = repository.findAll(pageRequest);
-		return list.map(x -> new UsuarioDto(x));
+	public Page<UsuarioDto> findAllPaged(String nome, PageRequest pageRequest) {
+		Page<Usuario> page;
+		if(nome == "") {
+			page = repository.findAll(pageRequest);
+		} else {
+			page = repository.find(nome, pageRequest);
+		}
+		return page.map(x -> new UsuarioDto(x));
 	}
 
 	@Transactional(readOnly = true)
