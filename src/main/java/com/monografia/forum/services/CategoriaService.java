@@ -1,14 +1,12 @@
 package com.monografia.forum.services;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,13 +35,9 @@ public class CategoriaService {
 	private TopicoRepository topicoRepository;
 
 	@Transactional(readOnly = true)
-	public List<CategoriaDto> listar() {
-		List<Categoria> lista = repository.findAll();
-		List<CategoriaDto> listaDto = new ArrayList<CategoriaDto>();
-		for (Categoria entidade : lista) {
-			listaDto.add(new CategoriaDto(entidade, entidade.getTopicos(), entidade.getSubcategorias()));
-		}
-		return listaDto;
+	public Page<CategoriaDto> listar(PageRequest pageRequest) {
+		Page<Categoria> list = repository.findAll(pageRequest);
+		return list.map(x -> new CategoriaDto(x));
 	}
 
 	@Transactional(readOnly = true)
@@ -63,24 +57,19 @@ public class CategoriaService {
 
 	@Transactional
 	public CategoriaDto atualizar(Long id, CategoriaDto dto) {
-		try {
-			Categoria entidade = repository.getOne(id);
-			copiarDtoParaEntidade(dto, entidade);
-			entidade = repository.save(entidade);
-			return new CategoriaDto(entidade);
-		} catch (EntityNotFoundException e) {
-			throw new EntidadeNaoEncontradaException("Categoria com id " + id + " não foi encontrada");
-		}
-
+		Optional<Categoria> optional = repository.findById(id);
+		Categoria entidade = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		copiarDtoParaEntidade(dto, entidade);
+		entidade = repository.save(entidade);
+		return new CategoriaDto(entidade);
 	}
-	
+
 	public void deletar(Long id) {
 		try {
 			repository.deleteById(id);
-		} catch(EmptyResultDataAccessException e) {
+		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException("Categoria com id " + id + " não foi encontrada");
-		}
-		catch (DataIntegrityViolationException e) {
+		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Violação de integridade");
 		}
 	}
@@ -90,14 +79,16 @@ public class CategoriaService {
 
 		entity.getSubcategorias().clear();
 		for (SubcategoriaDto subcategoriaDto : dto.getSubcategorias()) {
-			Subcategoria subcategoria = subcategoriaRepository.getOne(subcategoriaDto.getId());
-			entity.getSubcategorias().add(subcategoria);
+			Optional<Subcategoria> optional = subcategoriaRepository.findById(subcategoriaDto.getId());
+			Subcategoria entidade = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+			entity.getSubcategorias().add(entidade);
 		}
 
 		entity.getTopicos().clear();
 		for (TopicoDto topicoDto : dto.getTopicos()) {
-			Topico topico = topicoRepository.getOne(topicoDto.getId());
-			entity.getTopicos().add(topico);
+			Optional<Topico> optional = topicoRepository.findById(topicoDto.getId());
+			Topico entidade = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+			entity.getTopicos().add(entidade);
 		}
 	}
 }
