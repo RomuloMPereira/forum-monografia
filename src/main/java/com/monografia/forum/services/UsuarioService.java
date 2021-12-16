@@ -88,7 +88,10 @@ public class UsuarioService implements UserDetailsService {
 	
 	public boolean confirmarUsuario(Long id, String username) {
 		Usuario user = (Usuario) loadUserByUsername(username);
-		if(user.getId() == id) {
+		//Se o usuário autenticado tiver o id da entidade a ser alterada
+		//Ou se o usuário autenticado for OPERATOR e ADMIN
+		//Retorna verdadeiro
+		if(user.getId() == id || user.getFuncoes().stream().count() == 2) {
 			return true;
 		}
 		return false;
