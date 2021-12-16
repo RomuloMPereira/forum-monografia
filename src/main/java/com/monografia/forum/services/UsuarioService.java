@@ -102,7 +102,7 @@ public class UsuarioService implements UserDetailsService {
 		entity.getFuncoes().clear();
 
 		// Se o dto não vier com nenhuma função, adiciona ROLE_OPERATOR à entidade.
-		if (dto.getFuncoes() == null) {
+		if (dto.getFuncoes().isEmpty()) {
 			Optional<Funcao> optional = funcaoRepository.findById(1L);
 			Funcao funcao = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
 			entity.getFuncoes().add(funcao);

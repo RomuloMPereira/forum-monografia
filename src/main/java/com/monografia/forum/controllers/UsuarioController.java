@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,6 +67,16 @@ public class UsuarioController {
 		if(service.confirmarUsuario(id, username)) {
 			UsuarioPayloadDto newDto = service.update(id, dto);
 			return ResponseEntity.ok().body(newDto);
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	}
+	
+	@DeleteMapping(value = "/{id}")
+	private ResponseEntity<UsuarioPayloadDto> deletar(@PathVariable Long id,
+			@AuthenticationPrincipal String username) {
+		if(service.confirmarUsuario(id, username)) {
+			service.delete(id);
+			return ResponseEntity.noContent().build();
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	}
