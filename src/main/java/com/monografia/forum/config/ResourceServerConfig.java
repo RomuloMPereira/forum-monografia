@@ -31,7 +31,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	
 	private static final String[] POST_PUBLIC = {"/usuarios/**"};
 
-	//private static final String[] OPERATOR_OR_ADMIN = { };
+	private static final String[] OPERATOR_OR_ADMIN = { "/usuarios/**"};
 
 	private static final String[] ADMIN = { "/categorias/**", "/subcategorias/**" };
 
@@ -46,7 +46,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 			.antMatchers(AUTH).permitAll()
 			.antMatchers(HttpMethod.GET, GET).permitAll()
 			.antMatchers(HttpMethod.POST, POST_PUBLIC).permitAll()
-			//.antMatchers(OPERATOR_OR_ADMIN).hasAnyRole("OPERATOR", "ADMIN")
+			.antMatchers(OPERATOR_OR_ADMIN).hasAnyRole("OPERATOR", "ADMIN")
 			.antMatchers(ADMIN).hasAnyRole("ADMIN")
 			.anyRequest().authenticated();
 		

@@ -3,16 +3,18 @@ package com.monografia.forum.controllers;
 import java.net.URI;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,5 +58,15 @@ public class UsuarioController {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dtoPayload);
+	}
+	
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<UsuarioPayloadDto> atualizar(@PathVariable Long id, 
+			@Valid @RequestBody UsuarioDto dto, @AuthenticationPrincipal String username){
+		if(service.confirmarUsuario(id, username)) {
+			UsuarioPayloadDto newDto = service.update(id, dto);
+			return ResponseEntity.ok().body(newDto);
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	}
 }

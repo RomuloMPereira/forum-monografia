@@ -85,6 +85,14 @@ public class UsuarioService implements UserDetailsService {
 			throw new DatabaseException("Violação de integridade");
 		}
 	}
+	
+	public boolean confirmarUsuario(Long id, String username) {
+		Usuario user = (Usuario) loadUserByUsername(username);
+		if(user.getId() == id) {
+			return true;
+		}
+		return false;
+	}
 
 	private void copyDtoToEntity(UsuarioDto dto, Usuario entity) {
 		entity.setNome(dto.getNome());
