@@ -32,7 +32,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	
 	private static final String[] POST_PUBLIC = {"/usuarios/**"};
 
-	private static final String[] OPERATOR_OR_ADMIN = { "/usuarios/**"};
+	private static final String[] OPERATOR_OR_ADMIN = { "/usuarios/**", "/topicos/**"};
 
 	private static final String[] ADMIN = { "/categorias/**", "/subcategorias/**" };
 
