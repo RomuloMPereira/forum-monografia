@@ -27,7 +27,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	private static final String[] AUTH = {"oauth/token"};
 	
-	private static final String[] GET = { "/categorias/**", "/subcategorias/**", "/usuarios/**" };
+	private static final String[] GET = { "/categorias/**", "/subcategorias/**", 
+			"/usuarios/**", "/topicos/**"};
 	
 	private static final String[] POST_PUBLIC = {"/usuarios/**"};
 
