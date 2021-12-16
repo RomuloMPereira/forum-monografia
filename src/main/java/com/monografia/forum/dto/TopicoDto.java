@@ -24,16 +24,16 @@ public class TopicoDto implements Serializable{
 	private String corpo;
 	private Instant instante;
 	
-	private UsuarioDto autor;
+	private UsuarioPayloadDto autor;
 	private CategoriaDto categoria;	
 	private SubcategoriaDto subcategoria;
-	private List<UsuarioDto> curtidas = new ArrayList<>();
+	private List<UsuarioPayloadDto> curtidas = new ArrayList<>();
 	private List<RespostaDto> respostas = new ArrayList<>();
 	
 	public TopicoDto() {
 	}
 
-	public TopicoDto(Long id, String titulo, String corpo, Instant instante, UsuarioDto autor, CategoriaDto categoria, SubcategoriaDto subcategoria) {
+	public TopicoDto(Long id, String titulo, String corpo, Instant instante, UsuarioPayloadDto autor, CategoriaDto categoria, SubcategoriaDto subcategoria) {
 		this.id = id;
 		this.titulo = titulo;
 		this.corpo = corpo;
@@ -48,7 +48,7 @@ public class TopicoDto implements Serializable{
 		this.titulo = entidade.getTitulo();
 		this.corpo = entidade.getCorpo();
 		this.instante = entidade.getInstante();
-		this.autor = new UsuarioDto(entidade.getAutor());
+		this.autor = new UsuarioPayloadDto(entidade.getAutor());
 		this.categoria = new CategoriaDto(entidade.getCategoria());
 		this.subcategoria = new SubcategoriaDto(entidade.getSubcategoria());
 	}
@@ -58,11 +58,11 @@ public class TopicoDto implements Serializable{
 		this.titulo = entidade.getTitulo();
 		this.corpo = entidade.getCorpo();
 		this.instante = entidade.getInstante();
-		this.autor = new UsuarioDto(entidade.getAutor());
+		this.autor = new UsuarioPayloadDto(entidade.getAutor());
 		this.categoria = new CategoriaDto(entidade.getCategoria());
 		this.subcategoria = new SubcategoriaDto(entidade.getSubcategoria());
 		
-		curtidas.forEach(user -> this.curtidas.add(new UsuarioDto(user)));
+		curtidas.forEach(user -> this.curtidas.add(new UsuarioPayloadDto(user)));
 		respostas.forEach(resposta -> this.respostas.add(new RespostaDto(resposta)));
 	}
 
@@ -98,11 +98,11 @@ public class TopicoDto implements Serializable{
 		this.instante = instante;
 	}
 
-	public UsuarioDto getAutor() {
+	public UsuarioPayloadDto getAutor() {
 		return autor;
 	}
 
-	public void setAutor(UsuarioDto autor) {
+	public void setAutor(UsuarioPayloadDto autor) {
 		this.autor = autor;
 	}
 
@@ -122,11 +122,11 @@ public class TopicoDto implements Serializable{
 		this.subcategoria = subcategoria;
 	}
 
-	public List<UsuarioDto> getCurtidas() {
+	public List<UsuarioPayloadDto> getCurtidas() {
 		return curtidas;
 	}
 
-	public void setCurtidas(List<UsuarioDto> curtidas) {
+	public void setCurtidas(List<UsuarioPayloadDto> curtidas) {
 		this.curtidas = curtidas;
 	}
 

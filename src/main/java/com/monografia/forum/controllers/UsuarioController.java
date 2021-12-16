@@ -34,7 +34,7 @@ public class UsuarioController {
 	private UsuarioService service;
 	
 	@GetMapping
-	private ResponseEntity<Page<UsuarioPayloadDto>> listar(
+	public ResponseEntity<Page<UsuarioPayloadDto>> listar(
 			@RequestParam(value = "nome", defaultValue = "") String nome,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
@@ -48,13 +48,13 @@ public class UsuarioController {
 	}
 	
 	@GetMapping(value = "/{id}")
-	private ResponseEntity<UsuarioPayloadDto> buscarPorId(@PathVariable Long id){
+	public ResponseEntity<UsuarioPayloadDto> buscarPorId(@PathVariable Long id){
 		UsuarioPayloadDto dto = service.findById(id);
 		return ResponseEntity.ok().body(dto);
 	}
 	
 	@PostMapping
-	private ResponseEntity<UsuarioPayloadDto> cadastrar(@Valid @RequestBody UsuarioDto dto){
+	public ResponseEntity<UsuarioPayloadDto> cadastrar(@Valid @RequestBody UsuarioDto dto){
 		UsuarioPayloadDto dtoPayload = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(dto.getId()).toUri();
@@ -72,7 +72,7 @@ public class UsuarioController {
 	}
 	
 	@DeleteMapping(value = "/{id}")
-	private ResponseEntity<UsuarioPayloadDto> deletar(@PathVariable Long id,
+	public ResponseEntity<UsuarioPayloadDto> deletar(@PathVariable Long id,
 			@AuthenticationPrincipal String username) {
 		if(service.confirmarUsuario(id, username)) {
 			service.delete(id);
