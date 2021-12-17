@@ -11,19 +11,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.monografia.forum.dto.RespostaDto;
 import com.monografia.forum.dto.TopicoDto;
-import com.monografia.forum.dto.UsuarioPayloadDto;
 import com.monografia.forum.entities.Categoria;
-import com.monografia.forum.entities.Resposta;
 import com.monografia.forum.entities.Subcategoria;
 import com.monografia.forum.entities.Topico;
 import com.monografia.forum.entities.Usuario;
 import com.monografia.forum.repositories.CategoriaRepository;
-import com.monografia.forum.repositories.RespostaRepository;
 import com.monografia.forum.repositories.SubcategoriaRepository;
 import com.monografia.forum.repositories.TopicoRepository;
-import com.monografia.forum.repositories.UsuarioRepository;
 import com.monografia.forum.services.exceptions.DatabaseException;
 import com.monografia.forum.services.exceptions.EntidadeNaoEncontradaException;
 import com.monografia.forum.services.exceptions.NaoAutorizadoException;
@@ -35,9 +30,6 @@ public class TopicoService {
 	private TopicoRepository repository; 
 	
 	@Autowired
-	private UsuarioRepository usuarioRepository;
-	
-	@Autowired
 	private UsuarioService usuarioService;
 	
 	@Autowired
@@ -45,9 +37,6 @@ public class TopicoService {
 	
 	@Autowired
 	private SubcategoriaRepository subcategoriaRepository;
-	
-	@Autowired
-	private RespostaRepository respostaRepository;
 	
 	@Transactional(readOnly = true)
 	public Page<TopicoDto> listar(String titulo, PageRequest pageRequest){
@@ -95,7 +84,7 @@ public class TopicoService {
 		if(topico.getAutor().getId() == user.getId()) {
 			copyDtoToEntity(dto, topico);
 			topico = repository.save(topico);
-			return new TopicoDto(topico);
+			return new TopicoDto(topico, topico.getCurtidas(), topico.getRespostas());
 		} else {
 			throw new NaoAutorizadoException("Recurso não autorizado");
 		}
@@ -143,19 +132,5 @@ public class TopicoService {
 		Optional<Subcategoria> optional3 = subcategoriaRepository.findById(dto.getSubcategoria().getId());
 		Subcategoria subcategoria = optional3.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
 		entity.setSubcategoria(subcategoria);
-		
-		entity.getCurtidas().clear();
-		for (UsuarioPayloadDto userDto : dto.getCurtidas()) {
-			Optional<Usuario> optional4 = usuarioRepository.findById(userDto.getId());
-			Usuario user = optional4.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
-			entity.getCurtidas().add(user);
-		}
-		
-		entity.getRespostas().clear();
-		for(RespostaDto respostaDto : dto.getRespostas()) {
-			Optional<Resposta> optional5 = respostaRepository.findById(respostaDto.getId());
-			Resposta resposta = optional5.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
-			entity.getRespostas().add(resposta);
-		}
 	}
 }
