@@ -118,6 +118,19 @@ public class TopicoService {
 		}
 	}
 	
+	@Transactional
+	public TopicoDto curtir(Long userId, Long topicoId, String username) {
+		Optional<Topico> optional = repository.findById(topicoId);
+		Topico topico = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		Usuario user = (Usuario) usuarioService.loadUserByUsername(username);
+		if(userId == user.getId()) {
+			topico.getCurtidas().add(user);
+			topico = repository.save(topico);
+			return new TopicoDto(topico, topico.getCurtidas(), topico.getRespostas());
+		}
+		throw new NaoAutorizadoException("Recurso não autorizado");
+	}
+	
 	private void copyDtoToEntity(TopicoDto dto, Topico entity) {
 		entity.setTitulo(dto.getTitulo());
 		entity.setCorpo(dto.getCorpo());

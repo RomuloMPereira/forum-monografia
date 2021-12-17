@@ -47,7 +47,7 @@ public class TopicoController {
 		TopicoDto dto = service.buscarPorId(id);
 		return ResponseEntity.ok().body(dto);
 	}
-
+	
 	@PostMapping
 	public ResponseEntity<TopicoDto> cadastrar(@RequestBody TopicoDto dto, @AuthenticationPrincipal String username) {
 		TopicoDto dtoPayload = service.cadastrar(dto, username);
@@ -61,6 +61,14 @@ public class TopicoController {
 		dto = service.atualizar(id, dto, username);
 		return ResponseEntity.ok().body(dto);
 	}
+	
+	@PutMapping(value = "/{topicoId}/{userId}")
+	public ResponseEntity<TopicoDto> curtir(@PathVariable Long userId, 
+			@PathVariable Long topicoId, @AuthenticationPrincipal String username){
+		TopicoDto dto = service.curtir(userId, topicoId, username);
+		return ResponseEntity.ok().body(dto);
+	}
+
 	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<TopicoDto> deletar(@PathVariable Long id, 
