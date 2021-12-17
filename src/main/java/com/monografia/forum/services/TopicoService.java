@@ -23,6 +23,7 @@ import com.monografia.forum.repositories.SubcategoriaRepository;
 import com.monografia.forum.repositories.TopicoRepository;
 import com.monografia.forum.repositories.UsuarioRepository;
 import com.monografia.forum.services.exceptions.EntidadeNaoEncontradaException;
+import com.monografia.forum.services.exceptions.NaoAutorizadoException;
 
 @Service
 public class TopicoService {
@@ -81,6 +82,20 @@ public class TopicoService {
 		}
 		topico = repository.save(topico);
 		return new TopicoDto(topico);
+	}
+	
+	@Transactional
+	public TopicoDto atualizar(Long id, TopicoDto dto, String username) {
+		Optional<Topico> optional = repository.findById(id);
+		Topico topico = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		Usuario user = (Usuario) usuarioService.loadUserByUsername(username);
+		if(topico.getAutor().getId() == user.getId()) {
+			copyDtoToEntity(dto, topico);
+			topico = repository.save(topico);
+			return new TopicoDto(topico);
+		} else {
+			throw new NaoAutorizadoException("Recurso não autorizado");
+		}
 	}
 	
 	private void copyDtoToEntity(TopicoDto dto, Topico entity) {

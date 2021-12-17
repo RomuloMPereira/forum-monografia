@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.monografia.forum.services.exceptions.DatabaseException;
 import com.monografia.forum.services.exceptions.EntidadeNaoEncontradaException;
+import com.monografia.forum.services.exceptions.NaoAutorizadoException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -33,6 +34,19 @@ public class ControllerExceptionHandler {
 		err.setTimestamp(Instant.now());
 		err.setStatus(status.value());
 		err.setError("Database exception");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		
+		return ResponseEntity.status(status).body(err);
+	}
+	
+	@ExceptionHandler(NaoAutorizadoException.class)
+	public ResponseEntity<ErroPadrao> naoAutorizado(NaoAutorizadoException e, HttpServletRequest request){
+		HttpStatus status = HttpStatus.UNAUTHORIZED;
+		ErroPadrao err = new ErroPadrao();
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setError("Unauthorized exception");
 		err.setMessage(e.getMessage());
 		err.setPath(request.getRequestURI());
 		
