@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.monografia.forum.dto.RespostaDto;
 import com.monografia.forum.dto.TopicoDto;
+import com.monografia.forum.services.RespostaService;
 import com.monografia.forum.services.TopicoService;
 
 @RestController
@@ -28,6 +30,9 @@ public class TopicoController {
 
 	@Autowired
 	private TopicoService service;
+	
+	@Autowired
+	private RespostaService respostaService;
 
 	@GetMapping
 	public ResponseEntity<Page<TopicoDto>> listar(@RequestParam(value = "titulo", defaultValue = "") String titulo,
@@ -54,6 +59,16 @@ public class TopicoController {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dtoPayload);
 	}
+	
+	@PostMapping(value = "/{topicoId}/respostas")
+	public ResponseEntity<TopicoDto> cadastrarResposta(@PathVariable Long topicoId, 
+			@RequestBody RespostaDto dto, @AuthenticationPrincipal String username){
+		RespostaDto respostaDto = respostaService.cadastrar(topicoId, dto, username);
+		TopicoDto topicoDto = service.buscarPorId(topicoId);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(respostaDto.getId()).toUri();
+		return ResponseEntity.created(uri).body(topicoDto);
+	}
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @RequestBody TopicoDto dto,
@@ -62,13 +77,12 @@ public class TopicoController {
 		return ResponseEntity.ok().body(dto);
 	}
 	
-	@PutMapping(value = "/{topicoId}/{userId}")
+	@PutMapping(value = "/{topicoId}/usuarios/{userId}")
 	public ResponseEntity<TopicoDto> curtir(@PathVariable Long userId, 
 			@PathVariable Long topicoId, @AuthenticationPrincipal String username){
 		TopicoDto dto = service.curtir(userId, topicoId, username);
 		return ResponseEntity.ok().body(dto);
 	}
-
 	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<TopicoDto> deletar(@PathVariable Long id, 
@@ -77,7 +91,7 @@ public class TopicoController {
 		return ResponseEntity.noContent().build();
 	}
 	
-	@DeleteMapping(value = "/{topicoId}/{userId}")
+	@DeleteMapping(value = "/{topicoId}/usuarios/{userId}")
 	public ResponseEntity<TopicoDto> descurtir(@PathVariable Long topicoId,
 			@PathVariable Long userId, @AuthenticationPrincipal String username){
 		TopicoDto dto = service.descurtir(userId, topicoId, username);
