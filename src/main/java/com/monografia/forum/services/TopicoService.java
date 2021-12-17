@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import com.monografia.forum.repositories.RespostaRepository;
 import com.monografia.forum.repositories.SubcategoriaRepository;
 import com.monografia.forum.repositories.TopicoRepository;
 import com.monografia.forum.repositories.UsuarioRepository;
+import com.monografia.forum.services.exceptions.DatabaseException;
 import com.monografia.forum.services.exceptions.EntidadeNaoEncontradaException;
 import com.monografia.forum.services.exceptions.NaoAutorizadoException;
 
@@ -95,6 +98,23 @@ public class TopicoService {
 			return new TopicoDto(topico);
 		} else {
 			throw new NaoAutorizadoException("Recurso não autorizado");
+		}
+	}
+	
+	public void deletar(Long id, String username) {
+		Optional<Topico> optional = repository.findById(id);
+		Topico topico = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		Usuario user = (Usuario) usuarioService.loadUserByUsername(username);
+		try {
+			if(topico.getAutor().getId() == user.getId()) {
+				repository.deleteById(id);
+			} else {
+				throw new NaoAutorizadoException("Recurso não autorizado");
+			}
+		} catch (EmptyResultDataAccessException e) {
+			throw new EntidadeNaoEncontradaException("Id not found " + id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Violação de integridade");
 		}
 	}
 	
