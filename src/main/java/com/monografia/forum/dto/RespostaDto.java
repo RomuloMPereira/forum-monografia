@@ -19,14 +19,14 @@ public class RespostaDto implements Serializable{
 	@NotBlank(message = "Campo obrigatório")
 	private String corpo;
 	private Instant instante;
-	private UsuarioDto autor;
+	private UsuarioPayloadDto autor;
 	private TopicoDto topico;
-	private List<UsuarioDto> curtidas = new ArrayList<>();
+	private List<UsuarioPayloadDto> curtidas = new ArrayList<>();
 
 	public RespostaDto() {
 	}
 
-	public RespostaDto(Long id, String corpo, Instant instante, UsuarioDto autor, TopicoDto topico) {
+	public RespostaDto(Long id, String corpo, Instant instante, UsuarioPayloadDto autor, TopicoDto topico) {
 		this.id = id;
 		this.corpo = corpo;
 		this.instante = instante;
@@ -38,7 +38,7 @@ public class RespostaDto implements Serializable{
 		this.id = entidade.getId();
 		this.corpo = entidade.getCorpo();
 		this.instante = entidade.getInstante();
-		this.autor = new UsuarioDto(entidade.getAutor());
+		this.autor = new UsuarioPayloadDto(entidade.getAutor());
 		this.topico = new TopicoDto(entidade.getTopico());
 	}
 	
@@ -46,10 +46,10 @@ public class RespostaDto implements Serializable{
 		this.id = entidade.getId();
 		this.corpo = entidade.getCorpo();
 		this.instante = entidade.getInstante();
-		this.autor = new UsuarioDto(entidade.getAutor());
+		this.autor = new UsuarioPayloadDto(entidade.getAutor());
 		this.topico = new TopicoDto(entidade.getTopico());
 		
-		curtidas.forEach(curtida -> this.curtidas.add(new UsuarioDto(curtida)));
+		curtidas.forEach(curtida -> this.curtidas.add(new UsuarioPayloadDto(curtida)));
 	}
 
 	public Long getId() {
@@ -76,11 +76,11 @@ public class RespostaDto implements Serializable{
 		this.instante = instante;
 	}
 
-	public UsuarioDto getAutor() {
+	public UsuarioPayloadDto getAutor() {
 		return autor;
 	}
 
-	public void setAutor(UsuarioDto autor) {
+	public void setAutor(UsuarioPayloadDto autor) {
 		this.autor = autor;
 	}
 
@@ -92,11 +92,11 @@ public class RespostaDto implements Serializable{
 		this.topico = topico;
 	}
 
-	public List<UsuarioDto> getCurtidas() {
+	public List<UsuarioPayloadDto> getCurtidas() {
 		return curtidas;
 	}
 
-	public void setCurtidas(List<UsuarioDto> curtidas) {
+	public void setCurtidas(List<UsuarioPayloadDto> curtidas) {
 		this.curtidas = curtidas;
 	}
 }
