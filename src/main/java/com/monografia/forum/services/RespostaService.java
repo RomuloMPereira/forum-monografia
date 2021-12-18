@@ -14,6 +14,7 @@ import com.monografia.forum.entities.Usuario;
 import com.monografia.forum.repositories.RespostaRepository;
 import com.monografia.forum.repositories.TopicoRepository;
 import com.monografia.forum.services.exceptions.EntidadeNaoEncontradaException;
+import com.monografia.forum.services.exceptions.NaoAutorizadoException;
 
 @Service
 public class RespostaService {
@@ -39,5 +40,19 @@ public class RespostaService {
 		resposta.setTopico(topico);
 		resposta = repository.save(resposta);
 		return new RespostaDto(resposta);
+	}
+
+	@Transactional
+	public RespostaDto atualizar(Long respostaId, RespostaDto dto, String username) {
+		Optional<Resposta> optional2 = repository.findById(respostaId);
+		Resposta resposta = optional2.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		Usuario usuario = (Usuario) usuarioService.loadUserByUsername(username);
+		if(resposta.getAutor().getId() == usuario.getId()) {
+			resposta.setCorpo(dto.getCorpo());
+			resposta.setInstante(Instant.now());
+			resposta = repository.save(resposta);
+			return new RespostaDto(resposta, resposta.getCurtidas());
+		}
+		throw new NaoAutorizadoException("Recurso não autorizado");
 	}
 }

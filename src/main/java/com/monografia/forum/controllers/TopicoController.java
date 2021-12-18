@@ -84,6 +84,15 @@ public class TopicoController {
 		return ResponseEntity.ok().body(dto);
 	}
 	
+	@PutMapping(value = "/{topicoId}/respostas/{respostaId}")
+	public ResponseEntity<TopicoDto> atualizarResposta(@PathVariable Long topicoId,
+			@PathVariable Long respostaId, @RequestBody RespostaDto respostaDto,
+			@AuthenticationPrincipal String username){
+		respostaDto = respostaService.atualizar(respostaId, respostaDto, username);
+		TopicoDto topicoDto = service.buscarPorId(topicoId);
+		return ResponseEntity.ok().body(topicoDto);
+	}
+	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<TopicoDto> deletar(@PathVariable Long id, 
 			@AuthenticationPrincipal String username){
