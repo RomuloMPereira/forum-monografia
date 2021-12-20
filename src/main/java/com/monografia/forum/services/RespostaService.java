@@ -82,4 +82,18 @@ public class RespostaService {
 			throw new DatabaseException("Violação de integridade");
 		}
 	}
+
+	@Transactional
+	public RespostaDto curtir(Long respostaId, Long userId, String username) {
+		Optional<Resposta> optional = repository.findById(respostaId);
+		Resposta resposta = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		Usuario usuario = (Usuario) usuarioService.loadUserByUsername(username);
+		if(userId == usuario.getId()) {
+			resposta.getCurtidas().add(usuario);
+			resposta = repository.save(resposta);
+			return new RespostaDto(resposta, resposta.getCurtidas());
+		} else {
+			throw new NaoAutorizadoException("Recurso não autorizado");
+		}
+	}
 }

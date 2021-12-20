@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.monografia.forum.dto.RespostaDto;
 import com.monografia.forum.dto.TopicoDto;
-import com.monografia.forum.services.RespostaService;
 import com.monografia.forum.services.TopicoService;
 
 @RestController
@@ -29,10 +27,7 @@ import com.monografia.forum.services.TopicoService;
 public class TopicoController {
 
 	@Autowired
-	private TopicoService service;
-
-	@Autowired
-	private RespostaService respostaService;
+	private TopicoService service;	
 
 	@GetMapping
 	public ResponseEntity<Page<TopicoDto>> listar(@RequestParam(value = "titulo", defaultValue = "") String titulo,
@@ -60,16 +55,6 @@ public class TopicoController {
 		return ResponseEntity.created(uri).body(dtoPayload);
 	}
 
-	@PostMapping(value = "/{topicoId}/respostas")
-	public ResponseEntity<TopicoDto> cadastrarResposta(@PathVariable Long topicoId, @RequestBody RespostaDto dto,
-			@AuthenticationPrincipal String username) {
-		RespostaDto respostaDto = respostaService.cadastrar(topicoId, dto, username);
-		TopicoDto topicoDto = service.buscarPorId(topicoId);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(respostaDto.getId())
-				.toUri();
-		return ResponseEntity.created(uri).body(topicoDto);
-	}
-
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @RequestBody TopicoDto dto,
 			@AuthenticationPrincipal String username) {
@@ -84,36 +69,10 @@ public class TopicoController {
 		return ResponseEntity.ok().body(dto);
 	}
 
-	@PutMapping(value = "/{topicoId}/respostas/{respostaId}")
-	public ResponseEntity<TopicoDto> atualizarResposta(@PathVariable Long topicoId, @PathVariable Long respostaId,
-			@RequestBody RespostaDto respostaDto, @AuthenticationPrincipal String username) {
-		RespostaDto dto = respostaService.buscarPorId(respostaId);
-		if (dto.getTopico().getId() == topicoId) {
-			respostaDto = respostaService.atualizar(respostaId, respostaDto, username);
-			TopicoDto topicoDto = service.buscarPorId(topicoId);
-			return ResponseEntity.ok().body(topicoDto);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
-	}
-
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<TopicoDto> deletar(@PathVariable Long id, @AuthenticationPrincipal String username) {
 		service.deletar(id, username);
 		return ResponseEntity.noContent().build();
-	}
-
-	@DeleteMapping(value = "/{topicoId}/respostas/{respostaId}")
-	public ResponseEntity<TopicoDto> deletarResposta(@PathVariable Long topicoId, @PathVariable Long respostaId,
-			@AuthenticationPrincipal String username) {
-		RespostaDto dto = respostaService.buscarPorId(respostaId);
-		if (dto.getTopico().getId() == topicoId) {
-			respostaService.deletar(respostaId, username);
-			TopicoDto topicoDto = service.buscarPorId(topicoId);
-			return ResponseEntity.ok().body(topicoDto);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
 	}
 
 	@DeleteMapping(value = "/{topicoId}/usuarios/{userId}")
