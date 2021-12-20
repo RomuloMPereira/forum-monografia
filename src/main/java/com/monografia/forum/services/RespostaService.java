@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,7 @@ import com.monografia.forum.entities.Topico;
 import com.monografia.forum.entities.Usuario;
 import com.monografia.forum.repositories.RespostaRepository;
 import com.monografia.forum.repositories.TopicoRepository;
+import com.monografia.forum.services.exceptions.DatabaseException;
 import com.monografia.forum.services.exceptions.EntidadeNaoEncontradaException;
 import com.monografia.forum.services.exceptions.NaoAutorizadoException;
 
@@ -44,8 +47,8 @@ public class RespostaService {
 
 	@Transactional
 	public RespostaDto atualizar(Long respostaId, RespostaDto dto, String username) {
-		Optional<Resposta> optional2 = repository.findById(respostaId);
-		Resposta resposta = optional2.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		Optional<Resposta> optional = repository.findById(respostaId);
+		Resposta resposta = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
 		Usuario usuario = (Usuario) usuarioService.loadUserByUsername(username);
 		if(resposta.getAutor().getId() == usuario.getId()) {
 			resposta.setCorpo(dto.getCorpo());
@@ -54,5 +57,22 @@ public class RespostaService {
 			return new RespostaDto(resposta, resposta.getCurtidas());
 		}
 		throw new NaoAutorizadoException("Recurso não autorizado");
+	}
+
+	public void deletar(Long id, String username) {
+		Optional<Resposta> optional = repository.findById(id);
+		Resposta resposta = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		Usuario usuario = (Usuario) usuarioService.loadUserByUsername(username);
+		try {
+			if(resposta.getAutor().getId() == usuario.getId()) {
+				repository.deleteById(id);
+			} else {
+				throw new NaoAutorizadoException("Recurso não autorizado");
+			}
+		} catch (EmptyResultDataAccessException e) {
+			throw new EntidadeNaoEncontradaException("Id not found " + id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Violação de integridade");
+		}
 	}
 }

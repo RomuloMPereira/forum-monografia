@@ -100,6 +100,14 @@ public class TopicoController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@DeleteMapping(value = "/{topicoId}/respostas/{respostaId}")
+	public ResponseEntity<TopicoDto> deletarResposta(@PathVariable Long topicoId, 
+			@PathVariable Long respostaId, @AuthenticationPrincipal String username){
+		respostaService.deletar(respostaId, username);
+		TopicoDto topicoDto = service.buscarPorId(topicoId);
+		return ResponseEntity.ok().body(topicoDto);
+	}
+	
 	@DeleteMapping(value = "/{topicoId}/usuarios/{userId}")
 	public ResponseEntity<TopicoDto> descurtir(@PathVariable Long topicoId,
 			@PathVariable Long userId, @AuthenticationPrincipal String username){
