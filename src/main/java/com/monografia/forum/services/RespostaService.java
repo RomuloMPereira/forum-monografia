@@ -96,4 +96,17 @@ public class RespostaService {
 			throw new NaoAutorizadoException("Recurso não autorizado");
 		}
 	}
+
+	@Transactional
+	public RespostaDto descurtir(Long userId, Long respostaId, String username) {
+		Optional<Resposta> optional = repository.findById(respostaId);
+		Resposta resposta = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		Usuario usuario = (Usuario) usuarioService.loadUserByUsername(username);
+		if(userId == usuario.getId()) {
+			resposta.getCurtidas().remove(usuario);
+			resposta = repository.save(resposta);
+			return new RespostaDto(resposta, resposta.getCurtidas());
+		}
+		throw new NaoAutorizadoException("Recurso não autorizado");
+	}
 }
