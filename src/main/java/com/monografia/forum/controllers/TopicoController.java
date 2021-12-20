@@ -30,7 +30,7 @@ public class TopicoController {
 
 	@Autowired
 	private TopicoService service;
-	
+
 	@Autowired
 	private RespostaService respostaService;
 
@@ -52,21 +52,21 @@ public class TopicoController {
 		TopicoDto dto = service.buscarPorId(id);
 		return ResponseEntity.ok().body(dto);
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<TopicoDto> cadastrar(@RequestBody TopicoDto dto, @AuthenticationPrincipal String username) {
 		TopicoDto dtoPayload = service.cadastrar(dto, username);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dtoPayload);
 	}
-	
+
 	@PostMapping(value = "/{topicoId}/respostas")
-	public ResponseEntity<TopicoDto> cadastrarResposta(@PathVariable Long topicoId, 
-			@RequestBody RespostaDto dto, @AuthenticationPrincipal String username){
+	public ResponseEntity<TopicoDto> cadastrarResposta(@PathVariable Long topicoId, @RequestBody RespostaDto dto,
+			@AuthenticationPrincipal String username) {
 		RespostaDto respostaDto = respostaService.cadastrar(topicoId, dto, username);
 		TopicoDto topicoDto = service.buscarPorId(topicoId);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(respostaDto.getId()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(respostaDto.getId())
+				.toUri();
 		return ResponseEntity.created(uri).body(topicoDto);
 	}
 
@@ -76,41 +76,49 @@ public class TopicoController {
 		dto = service.atualizar(id, dto, username);
 		return ResponseEntity.ok().body(dto);
 	}
-	
+
 	@PutMapping(value = "/{topicoId}/usuarios/{userId}")
-	public ResponseEntity<TopicoDto> curtir(@PathVariable Long userId, 
-			@PathVariable Long topicoId, @AuthenticationPrincipal String username){
+	public ResponseEntity<TopicoDto> curtir(@PathVariable Long userId, @PathVariable Long topicoId,
+			@AuthenticationPrincipal String username) {
 		TopicoDto dto = service.curtir(userId, topicoId, username);
 		return ResponseEntity.ok().body(dto);
 	}
-	
+
 	@PutMapping(value = "/{topicoId}/respostas/{respostaId}")
-	public ResponseEntity<TopicoDto> atualizarResposta(@PathVariable Long topicoId,
-			@PathVariable Long respostaId, @RequestBody RespostaDto respostaDto,
-			@AuthenticationPrincipal String username){
-		respostaDto = respostaService.atualizar(respostaId, respostaDto, username);
-		TopicoDto topicoDto = service.buscarPorId(topicoId);
-		return ResponseEntity.ok().body(topicoDto);
+	public ResponseEntity<TopicoDto> atualizarResposta(@PathVariable Long topicoId, @PathVariable Long respostaId,
+			@RequestBody RespostaDto respostaDto, @AuthenticationPrincipal String username) {
+		RespostaDto dto = respostaService.buscarPorId(respostaId);
+		if (dto.getTopico().getId() == topicoId) {
+			respostaDto = respostaService.atualizar(respostaId, respostaDto, username);
+			TopicoDto topicoDto = service.buscarPorId(topicoId);
+			return ResponseEntity.ok().body(topicoDto);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
-	
+
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<TopicoDto> deletar(@PathVariable Long id, 
-			@AuthenticationPrincipal String username){
+	public ResponseEntity<TopicoDto> deletar(@PathVariable Long id, @AuthenticationPrincipal String username) {
 		service.deletar(id, username);
 		return ResponseEntity.noContent().build();
 	}
-	
+
 	@DeleteMapping(value = "/{topicoId}/respostas/{respostaId}")
-	public ResponseEntity<TopicoDto> deletarResposta(@PathVariable Long topicoId, 
-			@PathVariable Long respostaId, @AuthenticationPrincipal String username){
-		respostaService.deletar(respostaId, username);
-		TopicoDto topicoDto = service.buscarPorId(topicoId);
-		return ResponseEntity.ok().body(topicoDto);
+	public ResponseEntity<TopicoDto> deletarResposta(@PathVariable Long topicoId, @PathVariable Long respostaId,
+			@AuthenticationPrincipal String username) {
+		RespostaDto dto = respostaService.buscarPorId(respostaId);
+		if (dto.getTopico().getId() == topicoId) {
+			respostaService.deletar(respostaId, username);
+			TopicoDto topicoDto = service.buscarPorId(topicoId);
+			return ResponseEntity.ok().body(topicoDto);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
-	
+
 	@DeleteMapping(value = "/{topicoId}/usuarios/{userId}")
-	public ResponseEntity<TopicoDto> descurtir(@PathVariable Long topicoId,
-			@PathVariable Long userId, @AuthenticationPrincipal String username){
+	public ResponseEntity<TopicoDto> descurtir(@PathVariable Long topicoId, @PathVariable Long userId,
+			@AuthenticationPrincipal String username) {
 		TopicoDto dto = service.descurtir(userId, topicoId, username);
 		return ResponseEntity.ok().body(dto);
 	}

@@ -31,6 +31,13 @@ public class RespostaService {
 	@Autowired
 	private UsuarioService usuarioService;
 
+	@Transactional(readOnly = true)
+	public RespostaDto buscarPorId(Long id){
+		Optional<Resposta> optional = repository.findById(id);
+		Resposta entity = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
+		return new RespostaDto(entity); 
+	}
+	
 	@Transactional
 	public RespostaDto cadastrar(Long topicoId, RespostaDto respostaDto, String username) {
 		Optional<Topico> optional = topicoRepository.findById(topicoId);
