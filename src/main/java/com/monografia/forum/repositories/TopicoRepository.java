@@ -11,7 +11,7 @@ import com.monografia.forum.entities.Topico;
 @Repository
 public interface TopicoRepository extends JpaRepository<Topico, Long>{
 
-	@Query("SELECT DISTINCT topico FROM Topico topico WHERE "
-			+ "(LOWER(topico.titulo) LIKE LOWER(CONCAT('%',:titulo,'%')))")
+	@Query(value="SELECT DISTINCT topico FROM Topico topico WHERE "
+			+ "(LOWER(topico.titulo) LIKE LOWER(CONCAT('%',:titulo,'%')))", nativeQuery = true)
 	Page<Topico> find(String titulo, Pageable pageable);
 }
