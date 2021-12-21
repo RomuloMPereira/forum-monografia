@@ -8,11 +8,13 @@ import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.monografia.forum.entities.Resposta;
 import com.monografia.forum.entities.Topico;
 import com.monografia.forum.entities.Usuario;
 
-public class TopicoDto implements Serializable{
+public class TopicoDto extends RepresentationModel<TopicoDto> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
