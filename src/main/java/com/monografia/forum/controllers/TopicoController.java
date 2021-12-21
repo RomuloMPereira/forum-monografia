@@ -54,6 +54,9 @@ public class TopicoController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<TopicoDto> buscarPorId(@PathVariable Long id) {
 		TopicoDto dto = service.buscarPorId(id);
+		WebMvcLinkBuilder linkTo = 
+				linkTo(methodOn(this.getClass()).listar(null, null, null, null, null));
+		dto.add(linkTo.withRel("todos-topicos"));
 		return ResponseEntity.ok().body(dto);
 	}
 
