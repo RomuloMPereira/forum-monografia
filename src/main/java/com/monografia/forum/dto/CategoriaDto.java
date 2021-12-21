@@ -7,11 +7,13 @@ import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.monografia.forum.entities.Categoria;
 import com.monografia.forum.entities.Subcategoria;
 import com.monografia.forum.entities.Topico;
 
-public class CategoriaDto implements Serializable {
+public class CategoriaDto extends RepresentationModel<CategoriaDto> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;

@@ -1,5 +1,8 @@
 package com.monografia.forum.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.net.URI;
 
 import javax.validation.Valid;
@@ -8,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +42,10 @@ public class CategoriaController {
 			@RequestParam(value = "orderBy", defaultValue = "nome") String orderBy) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		Page<CategoriaDto> lista = service.listar(pageRequest);
+		lista.stream().forEach(x -> {
+			WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).buscarPorId(x.getId()));
+			x.add(linkTo.withRel("categoria"));
+		});
 		return ResponseEntity.ok().body(lista);
 	}
 
