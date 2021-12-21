@@ -52,6 +52,8 @@ public class CategoriaController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<CategoriaDto> buscarPorId(@PathVariable Long id) {
 		CategoriaDto dto = service.buscarPorId(id);
+		WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).listar(null, null, null, null));
+		dto.add(linkTo.withRel("todas-categorias"));
 		return ResponseEntity.ok().body(dto);
 	}
 
