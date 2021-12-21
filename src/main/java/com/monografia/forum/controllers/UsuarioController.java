@@ -59,6 +59,8 @@ public class UsuarioController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<UsuarioPayloadDto> buscarPorId(@PathVariable Long id){
 		UsuarioPayloadDto dto = service.findById(id);
+		WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).listar(null, null, null, null, null));
+		dto.add(linkTo.withRel("todos-usuarios"));
 		return ResponseEntity.ok().body(dto);
 	}
 	
