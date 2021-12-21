@@ -24,13 +24,13 @@ import com.monografia.forum.dto.SubcategoriaDto;
 import com.monografia.forum.services.SubcategoriaService;
 
 @RestController
-@RequestMapping(value = "/subcategorias")
+@RequestMapping(value = "/categorias")
 public class SubcategoriaController {
 
 	@Autowired
 	private SubcategoriaService service;
 
-	@GetMapping
+	@GetMapping(value = "/subcategorias")
 	public ResponseEntity<Page<SubcategoriaDto>> listar(
 			@RequestParam(value = "categoriaId", defaultValue = "0") Long categoriaId,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -42,29 +42,42 @@ public class SubcategoriaController {
 		return ResponseEntity.ok().body(lista);
 	}
 
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<SubcategoriaDto> buscarPorId(@PathVariable Long id) {
+	@GetMapping(value = "/{categoriaId}/subcategorias/{id}")
+	public ResponseEntity<SubcategoriaDto> buscarPorId(@PathVariable Long id, @PathVariable Long categoriaId) {
 		SubcategoriaDto dto = service.buscarPorId(id);
-		return ResponseEntity.ok().body(dto);
+		if(dto.getCategoria().getId() == categoriaId) {
+			return ResponseEntity.ok().body(dto);
+		}
+		return ResponseEntity.notFound().build();
 	}
 
-	@PostMapping
-	public ResponseEntity<SubcategoriaDto> cadastrar(@Valid @RequestBody SubcategoriaDto dto) {
-		dto = service.cadastrar(dto);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(dto.getId()).toUri();
-		return ResponseEntity.created(uri).body(dto);
+	@PostMapping("/{categoriaId}/subcategorias")
+	public ResponseEntity<SubcategoriaDto> cadastrar(@Valid @RequestBody SubcategoriaDto dto, @PathVariable Long categoriaId) {
+		if(dto.getCategoria().getId() == categoriaId) {
+			dto = service.cadastrar(dto);
+			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(dto.getId()).toUri();
+			return ResponseEntity.created(uri).body(dto);
+		}
+		return ResponseEntity.badRequest().build();
 	}
 
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<SubcategoriaDto> atualizar(@PathVariable Long id, @Valid @RequestBody SubcategoriaDto dto){
-		dto = service.atualizar(id, dto);
-		return ResponseEntity.ok().body(dto);
+	@PutMapping(value = "/{categoriaId}/subcategorias/{id}")
+	public ResponseEntity<SubcategoriaDto> atualizar(@PathVariable Long id, @PathVariable Long categoriaId, @Valid @RequestBody SubcategoriaDto dto){
+		if(dto.getCategoria().getId() == categoriaId) {
+			dto = service.atualizar(id, dto);
+			return ResponseEntity.ok().body(dto);
+		}
+		return ResponseEntity.badRequest().build();
 	}
 
-	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<SubcategoriaDto> deletar(@PathVariable Long id){
-		service.deletar(id);
-		return ResponseEntity.noContent().build();
+	@DeleteMapping(value = "/{categoriaId}/subcategorias/{id}")
+	public ResponseEntity<SubcategoriaDto> deletar(@PathVariable Long id, @PathVariable Long categoriaId){
+		SubcategoriaDto dto = service.buscarPorId(id);
+		if(dto.getCategoria().getId() == categoriaId) {
+			service.deletar(id);
+			return ResponseEntity.noContent().build();
+		}
+		return ResponseEntity.badRequest().build();
 	}
 }
