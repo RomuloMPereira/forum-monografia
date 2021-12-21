@@ -8,12 +8,14 @@ import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.monografia.forum.entities.Funcao;
 import com.monografia.forum.entities.Resposta;
 import com.monografia.forum.entities.Topico;
 import com.monografia.forum.entities.Usuario;
 
-public class UsuarioPayloadDto implements Serializable{
+public class UsuarioPayloadDto extends RepresentationModel<UsuarioPayloadDto> implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
