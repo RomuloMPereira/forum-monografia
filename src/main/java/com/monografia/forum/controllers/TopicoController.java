@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.net.URI;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,7 +29,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.monografia.forum.assemblers.TopicoModelAssembler;
 import com.monografia.forum.dto.TopicoDto;
+import com.monografia.forum.entities.Categoria;
+import com.monografia.forum.entities.Subcategoria;
 import com.monografia.forum.entities.Topico;
+import com.monografia.forum.repositories.CategoriaRepository;
+import com.monografia.forum.repositories.SubcategoriaRepository;
 import com.monografia.forum.repositories.TopicoRepository;
 import com.monografia.forum.services.TopicoService;
 
@@ -42,6 +47,12 @@ public class TopicoController {
 	@Autowired
 	private TopicoRepository repository;
 	
+	@Autowired
+	private CategoriaRepository categoriaRepository;
+	
+	@Autowired
+	private SubcategoriaRepository subcategoriaRepository;
+	
 	@Autowired 
 	private TopicoModelAssembler topicoModelAssembler;
 	
@@ -51,6 +62,8 @@ public class TopicoController {
 	@GetMapping
 	@Transactional
 	public ResponseEntity<PagedModel<TopicoDto>> listar(@RequestParam(value = "titulo", defaultValue = "") String titulo,
+			@RequestParam(value = "categoriaId", defaultValue = "0") Long categoriaId,
+			@RequestParam(value = "subcategoriaId", defaultValue = "0") Long subcategoriaId,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "3") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
@@ -58,10 +71,18 @@ public class TopicoController {
 
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		Page<Topico> lista;
-		if(titulo.isEmpty()) {
+		if(titulo.isEmpty() && categoriaId == 0 && subcategoriaId == 0) {
 			lista = repository.findAll(pageRequest);
-		} else {
+		} else if (categoriaId == 0 && subcategoriaId == 0){
 			lista = repository.find(titulo, pageRequest);
+		} else if (subcategoriaId == 0){
+			Optional<Categoria> optional = categoriaRepository.findById(categoriaId);
+			Categoria categoria = optional.get();
+			lista = repository.findByCategoria(categoria, pageRequest);
+		} else {
+			Optional<Subcategoria> optional = subcategoriaRepository.findById(subcategoriaId);
+			Subcategoria subcategoria = optional.get();
+			lista = repository.findBySubcategoria(subcategoria, pageRequest);
 		}
 		PagedModel<TopicoDto> pagedModel = pagedResourcesAssembler
 				.toModel(lista, topicoModelAssembler);
@@ -72,7 +93,7 @@ public class TopicoController {
 	public ResponseEntity<TopicoDto> buscarPorId(@PathVariable Long id) {
 		TopicoDto dto = service.buscarPorId(id);
 		WebMvcLinkBuilder linkTo = 
-				linkTo(methodOn(this.getClass()).listar(null, null, null, null, null));
+				linkTo(methodOn(this.getClass()).listar(null, null, null, null, null, null, null));
 		dto.add(linkTo.withRel("todos-topicos"));
 		return ResponseEntity.ok().body(dto);
 	}

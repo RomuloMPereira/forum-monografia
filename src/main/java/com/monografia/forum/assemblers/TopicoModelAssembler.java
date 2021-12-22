@@ -58,7 +58,7 @@ public class TopicoModelAssembler extends RepresentationModelAssemblerSupport<To
         CollectionModel<TopicoDto> topicoModels = super.toCollectionModel(entities);
          
         topicoModels.add(linkTo(methodOn(TopicoController.class)
-        		.listar(null, null, null, null, null))
+        		.listar(null, null, null, null, null, null, null))
         		.withSelfRel());
          
         return topicoModels;
