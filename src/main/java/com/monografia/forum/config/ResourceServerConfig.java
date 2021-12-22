@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -24,8 +25,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Autowired
 	private JwtTokenStore tokenStore;
+	
+	@Autowired
+	private Environment env;
 
-	private static final String[] AUTH = {"oauth/token"};
+	private static final String[] AUTH = {"oauth/token", "/h2-console/**"};
 	
 	private static final String[] GET = { "/categorias/**", "/subcategorias/**", 
 			"/usuarios/**", "/topicos/**"};
@@ -43,6 +47,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
+		//H2
+		if(Arrays.asList(env.getActiveProfiles()).contains("test")) {
+			http.headers().frameOptions().disable();
+		}
+
+		
 		http.authorizeRequests()
 			.antMatchers(AUTH).permitAll()
 			.antMatchers(HttpMethod.GET, GET).permitAll()

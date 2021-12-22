@@ -11,8 +11,6 @@ import javax.validation.constraints.NotBlank;
 import org.springframework.hateoas.RepresentationModel;
 
 import com.monografia.forum.entities.Funcao;
-import com.monografia.forum.entities.Resposta;
-import com.monografia.forum.entities.Topico;
 import com.monografia.forum.entities.Usuario;
 
 public class UsuarioDto extends RepresentationModel<UsuarioDto> implements Serializable{
@@ -31,9 +29,6 @@ public class UsuarioDto extends RepresentationModel<UsuarioDto> implements Seria
 	private String senha;
 	
 	private List<FuncaoDto> funcoes = new ArrayList<>(); 
-	private List<TopicoDto> topicos = new ArrayList<>();
-	private List<TopicoDto> topicosCurtidos = new ArrayList<>();
-	private List<RespostaDto> respostas = new ArrayList<>();
 	
 	public UsuarioDto() {
 	}
@@ -52,16 +47,13 @@ public class UsuarioDto extends RepresentationModel<UsuarioDto> implements Seria
 		this.senha = entidade.getSenha();
 	}
 	
-	public UsuarioDto(Usuario entidade, Set<Funcao> funcoes, Set<Topico> topicos, Set<Topico> topicosCurtidos, Set<Resposta> respostas) {
+	public UsuarioDto(Usuario entidade, Set<Funcao> funcoes) {
 		this.id = entidade.getId();
 		this.nome = entidade.getNome();
 		this.email = entidade.getEmail();
 		this.senha = entidade.getSenha();
 		
 		funcoes.forEach(funcao -> this.funcoes.add(new FuncaoDto(funcao)));
-		topicos.forEach(topico -> this.topicos.add(new TopicoDto(topico)));
-		topicosCurtidos.forEach(topicoCurtido -> this.topicosCurtidos.add(new TopicoDto(topicoCurtido)));
-		respostas.forEach(resposta -> this.respostas.add(new RespostaDto(resposta)));
 	}
 
 	public Long getId() {
@@ -102,29 +94,5 @@ public class UsuarioDto extends RepresentationModel<UsuarioDto> implements Seria
 
 	public void setFuncoes(List<FuncaoDto> funcoes) {
 		this.funcoes = funcoes;
-	}
-
-	public List<TopicoDto> getTopicos() {
-		return topicos;
-	}
-
-	public void setTopicos(List<TopicoDto> topicos) {
-		this.topicos = topicos;
-	}
-
-	public List<TopicoDto> getTopicosCurtidos() {
-		return topicosCurtidos;
-	}
-
-	public void setTopicosCurtidos(List<TopicoDto> topicosCurtidos) {
-		this.topicosCurtidos = topicosCurtidos;
-	}
-
-	public List<RespostaDto> getRespostas() {
-		return respostas;
-	}
-
-	public void setRespostas(List<RespostaDto> respostas) {
-		this.respostas = respostas;
 	}
 }

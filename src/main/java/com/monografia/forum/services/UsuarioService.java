@@ -16,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.monografia.forum.dto.FuncaoDto;
 import com.monografia.forum.dto.UsuarioDto;
 import com.monografia.forum.dto.UsuarioPayloadDto;
 import com.monografia.forum.entities.Funcao;
@@ -63,7 +62,6 @@ public class UsuarioService implements UserDetailsService {
 	public UsuarioPayloadDto insert(UsuarioDto dto) {
 		Usuario entity = new Usuario();
 		copyDtoToEntity(dto, entity);
-		entity.setSenha(passwordEncoder.encode(dto.getSenha()));
 		entity = repository.save(entity);
 		return new UsuarioPayloadDto(entity);
 	}
@@ -103,17 +101,9 @@ public class UsuarioService implements UserDetailsService {
 		entity.setEmail(dto.getEmail());
 		entity.setSenha(passwordEncoder.encode(dto.getSenha()));
 
-		entity.getFuncoes().clear();
-
-		// Se o dto não vier com nenhuma função, adiciona ROLE_OPERATOR à entidade.
-		if (dto.getFuncoes().isEmpty()) {
+		// Se a entidade não tiver nenhuma função, adiciona ROLE_OPERATOR à entidade.
+		if (entity.getFuncoes().isEmpty()) {
 			Optional<Funcao> optional = funcaoRepository.findById(1L);
-			Funcao funcao = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
-			entity.getFuncoes().add(funcao);
-		}
-
-		for (FuncaoDto funcaoDto : dto.getFuncoes()) {
-			Optional<Funcao> optional = funcaoRepository.findById(funcaoDto.getId());
 			Funcao funcao = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
 			entity.getFuncoes().add(funcao);
 		}
