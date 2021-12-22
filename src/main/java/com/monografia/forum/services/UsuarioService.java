@@ -55,7 +55,8 @@ public class UsuarioService implements UserDetailsService {
 	public UsuarioPayloadDto findById(Long id) {
 		Optional<Usuario> optional = repository.findById(id);
 		Usuario entity = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
-		return new UsuarioPayloadDto(entity);
+		return new UsuarioPayloadDto(entity, entity.getFuncoes(), entity.getTopicos(), 
+				entity.getTopicosCurtidos(), entity.getRespostas());
 	}
 
 	@Transactional
