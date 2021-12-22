@@ -1,16 +1,12 @@
 package com.monografia.forum.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.hateoas.RepresentationModel;
 
 import com.monografia.forum.entities.Subcategoria;
-import com.monografia.forum.entities.Topico;
 
 public class SubcategoriaDto extends RepresentationModel<SubcategoriaDto> implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -20,7 +16,6 @@ public class SubcategoriaDto extends RepresentationModel<SubcategoriaDto> implem
 	@NotBlank(message = "Campo obrigatório")
 	private String nome;
 	private CategoriaDto categoria;
-	private List<TopicoDto> topicos = new ArrayList<>();
 	
 	public SubcategoriaDto() {
 		
@@ -36,14 +31,6 @@ public class SubcategoriaDto extends RepresentationModel<SubcategoriaDto> implem
 		this.id = entidade.getId();
 		this.nome = entidade.getNome();
 		this.categoria = new CategoriaDto(entidade.getCategoria());
-	}
-	
-	public SubcategoriaDto(Subcategoria entidade, Set<Topico> topicos) {
-		this.id = entidade.getId();
-		this.nome = entidade.getNome();
-		this.categoria = new CategoriaDto(entidade.getCategoria());
-		
-		topicos.forEach(topico -> this.topicos.add(new TopicoDto(topico)));
 	}
 
 	public Long getId() {
@@ -68,13 +55,5 @@ public class SubcategoriaDto extends RepresentationModel<SubcategoriaDto> implem
 
 	public void setCategoria(CategoriaDto categoria) {
 		this.categoria = categoria;
-	}
-
-	public List<TopicoDto> getTopicos() {
-		return topicos;
-	}
-
-	public void setTopicos(List<TopicoDto> topicos) {
-		this.topicos = topicos;
 	}
 }

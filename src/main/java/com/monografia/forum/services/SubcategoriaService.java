@@ -11,13 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.monografia.forum.dto.SubcategoriaDto;
-import com.monografia.forum.dto.TopicoDto;
 import com.monografia.forum.entities.Categoria;
 import com.monografia.forum.entities.Subcategoria;
-import com.monografia.forum.entities.Topico;
 import com.monografia.forum.repositories.CategoriaRepository;
 import com.monografia.forum.repositories.SubcategoriaRepository;
-import com.monografia.forum.repositories.TopicoRepository;
 import com.monografia.forum.services.exceptions.DatabaseException;
 import com.monografia.forum.services.exceptions.EntidadeNaoEncontradaException;
 
@@ -30,9 +27,6 @@ public class SubcategoriaService {
 	@Autowired
 	private CategoriaRepository categoriaRepository;
 
-	@Autowired
-	private TopicoRepository topicoRepository;
-
 	@Transactional(readOnly = true)
 	public Page<SubcategoriaDto> listar(Long categoriaId, PageRequest pageRequest) {
 		Page<Subcategoria> page;
@@ -44,7 +38,7 @@ public class SubcategoriaService {
 			Categoria categoria = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
 			page = repository.find(categoria, pageRequest);
 		}
-		pageDto = page.map(x -> new SubcategoriaDto(x, x.getTopicos()));
+		pageDto = page.map(x -> new SubcategoriaDto(x));
 		
 		return pageDto;
 	}
@@ -54,7 +48,7 @@ public class SubcategoriaService {
 		Optional<Subcategoria> optional = repository.findById(id);
 		Subcategoria entidade = optional
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
-		return (new SubcategoriaDto(entidade, entidade.getTopicos()));
+		return (new SubcategoriaDto(entidade));
 	}
 
 	@Transactional
@@ -80,13 +74,6 @@ public class SubcategoriaService {
 		Optional<Categoria> optional = categoriaRepository.findById(dto.getCategoria().getId());
 		Categoria categoria = optional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
 		entidade.setCategoria(categoria);
-
-		entidade.getTopicos().clear();
-		for (TopicoDto topicoDto : dto.getTopicos()) {
-			Optional<Topico> opcional = topicoRepository.findById(topicoDto.getId());
-			Topico topico = opcional.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada"));
-			entidade.getTopicos().add(topico);
-		}
 	}
 
 	public void deletar(Long id) {
